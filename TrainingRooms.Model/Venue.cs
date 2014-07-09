@@ -12,5 +12,10 @@ namespace TrainingRooms.Model
         {
             return await Community.AddFactAsync(new Room(this));
         }
+
+        public async Task<Group> NewGroup()
+        {
+            return await Community.AddFactAsync(new Group(this));
+        }
     }
 }

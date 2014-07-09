@@ -15,6 +15,11 @@ query:
 	}
 }
 
+fact Day {
+key:
+	date when;
+}
+
 fact Room {
 key:
 	unique;
@@ -22,4 +27,31 @@ key:
 
 mutable:
 	string name;
+}
+
+fact Group {
+key:
+	unique;
+	Venue venue;
+
+mutable:
+	string name;
+}
+
+fact Schedule {
+key:
+	Room room;
+	Day day;
+
+query:
+	Event* events {
+		Event e : e.schedule = this
+	}
+}
+
+fact Event {
+key:
+	unique;
+	Schedule schedule;
+	Group group;
 }

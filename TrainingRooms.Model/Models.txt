@@ -1,0 +1,12 @@
+digraph "TrainingRooms.Model"
+{
+    rankdir=BT
+    Room -> Venue
+    Room__name -> Room
+    Room__name -> Room__name [label="  *"]
+    Group -> Venue
+    Group__name -> Group
+    Group__name -> Group__name [label="  *"]
+    Event -> Room
+    Event -> Group
+}
