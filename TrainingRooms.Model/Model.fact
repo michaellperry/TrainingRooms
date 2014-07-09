@@ -1,0 +1,25 @@
+namespace TrainingRooms.Model;
+
+fact Individual {
+key:
+    string anonymousId;
+}
+
+fact Venue {
+key:
+	unique;
+
+query:
+	Room* rooms {
+		Room r : r.venue = this
+	}
+}
+
+fact Room {
+key:
+	unique;
+	Venue venue;
+
+mutable:
+	string name;
+}
