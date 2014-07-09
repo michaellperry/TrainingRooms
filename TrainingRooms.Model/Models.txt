@@ -7,6 +7,8 @@ digraph "TrainingRooms.Model"
     Group -> Venue
     Group__name -> Group
     Group__name -> Group__name [label="  *"]
-    Event -> Room
+    Schedule -> Room
+    Schedule -> Day
+    Event -> Schedule
     Event -> Group
 }
