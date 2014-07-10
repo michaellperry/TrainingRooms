@@ -4,11 +4,16 @@ digraph "TrainingRooms.Model"
     Room -> Venue
     Room__name -> Room
     Room__name -> Room__name [label="  *"]
+    RoomDelete -> Room
     Group -> Venue
     Group__name -> Group
     Group__name -> Group__name [label="  *"]
+    Group__imageUrl -> Group
+    Group__imageUrl -> Group__imageUrl [label="  *"]
+    GroupDelete -> Group
     Schedule -> Room
     Schedule -> Day
     Event -> Schedule
     Event -> Group
+    EventDelete -> Event
 }

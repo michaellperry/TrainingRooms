@@ -12,6 +12,12 @@ key:
 query:
 	Room* rooms {
 		Room r : r.venue = this
+			where not r.isDeleted
+	}
+
+	Group* groups {
+		Group g : g.venue = this
+			where not g.isDeleted
 	}
 }
 
@@ -27,6 +33,16 @@ key:
 
 mutable:
 	string name;
+
+query:
+	bool isDeleted {
+		exists RoomDelete d : d.room = this
+	}
+}
+
+fact RoomDelete {
+key:
+	Room room;
 }
 
 fact Group {
@@ -36,6 +52,17 @@ key:
 
 mutable:
 	string name;
+	string imageUrl;
+
+query:
+	bool isDeleted {
+		exists GroupDelete d : d.group = this
+	}
+}
+
+fact GroupDelete {
+key:
+	Group group;
 }
 
 fact Schedule {
@@ -54,4 +81,15 @@ key:
 	unique;
 	Schedule schedule;
 	Group group;
+	time when;
+
+query:
+	bool isDeleted {
+		exists EventDelete d : d.deletedEvent = this
+	}
+}
+
+fact EventDelete {
+key:
+	Event deletedEvent;
 }

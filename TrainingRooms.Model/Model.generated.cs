@@ -15,13 +15,18 @@ digraph "TrainingRooms.Model"
     Room -> Venue
     Room__name -> Room
     Room__name -> Room__name [label="  *"]
+    RoomDelete -> Room
     Group -> Venue
     Group__name -> Group
     Group__name -> Group__name [label="  *"]
+    Group__imageUrl -> Group
+    Group__imageUrl -> Group__imageUrl [label="  *"]
+    GroupDelete -> Group
     Schedule -> Room
     Schedule -> Day
     Event -> Schedule
     Event -> Group
+    EventDelete -> Event
 }
 **/
 
@@ -232,10 +237,24 @@ namespace TrainingRooms.Model
             if (_cacheQueryRooms == null)
             {
 			    _cacheQueryRooms = new Query()
-		    		.JoinSuccessors(Room.GetRoleVenue())
+    				.JoinSuccessors(Room.GetRoleVenue(), Condition.WhereIsEmpty(Room.GetQueryIsDeleted())
+				)
                 ;
             }
             return _cacheQueryRooms;
+		}
+        private static Query _cacheQueryGroups;
+
+        public static Query GetQueryGroups()
+		{
+            if (_cacheQueryGroups == null)
+            {
+			    _cacheQueryGroups = new Query()
+    				.JoinSuccessors(Group.GetRoleVenue(), Condition.WhereIsEmpty(Group.GetQueryIsDeleted())
+				)
+                ;
+            }
+            return _cacheQueryGroups;
 		}
 
         // Predicates
@@ -249,6 +268,7 @@ namespace TrainingRooms.Model
 
         // Results
         private Result<Room> _rooms;
+        private Result<Group> _groups;
 
         // Business constructor
         public Venue(
@@ -268,6 +288,7 @@ namespace TrainingRooms.Model
         private void InitializeResults()
         {
             _rooms = new Result<Room>(this, GetQueryRooms(), Room.GetUnloadedInstance, Room.GetNullInstance);
+            _groups = new Result<Group>(this, GetQueryGroups(), Group.GetUnloadedInstance, Group.GetNullInstance);
         }
 
         // Predecessor access
@@ -280,6 +301,10 @@ namespace TrainingRooms.Model
         public Result<Room> Rooms
         {
             get { return _rooms; }
+        }
+        public Result<Group> Groups
+        {
+            get { return _groups; }
         }
 
         // Mutable property access
@@ -510,8 +535,21 @@ namespace TrainingRooms.Model
             }
             return _cacheQueryName;
 		}
+        private static Query _cacheQueryIsDeleted;
+
+        public static Query GetQueryIsDeleted()
+		{
+            if (_cacheQueryIsDeleted == null)
+            {
+			    _cacheQueryIsDeleted = new Query()
+		    		.JoinSuccessors(RoomDelete.GetRoleRoom())
+                ;
+            }
+            return _cacheQueryIsDeleted;
+		}
 
         // Predicates
+        public static Condition IsDeleted = Condition.WhereIsNotEmpty(GetQueryIsDeleted());
 
         // Predecessors
         private PredecessorObj<Venue> _venue;
@@ -754,6 +792,132 @@ namespace TrainingRooms.Model
 
     }
     
+    public partial class RoomDelete : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				RoomDelete newFact = new RoomDelete(memento);
+
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				RoomDelete fact = (RoomDelete)obj;
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return RoomDelete.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return RoomDelete.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"TrainingRooms.Model.RoomDelete", -1091590504);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static RoomDelete GetUnloadedInstance()
+        {
+            return new RoomDelete((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static RoomDelete GetNullInstance()
+        {
+            return new RoomDelete((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<RoomDelete> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (RoomDelete)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+        private static Role _cacheRoleRoom;
+        public static Role GetRoleRoom()
+        {
+            if (_cacheRoleRoom == null)
+            {
+                _cacheRoleRoom = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "room",
+			        Room._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleRoom;
+        }
+
+        // Queries
+
+        // Predicates
+
+        // Predecessors
+        private PredecessorObj<Room> _room;
+
+        // Fields
+
+        // Results
+
+        // Business constructor
+        public RoomDelete(
+            Room room
+            )
+        {
+            InitializeResults();
+            _room = new PredecessorObj<Room>(this, GetRoleRoom(), room);
+        }
+
+        // Hydration constructor
+        private RoomDelete(FactMemento memento)
+        {
+            InitializeResults();
+            _room = new PredecessorObj<Room>(this, GetRoleRoom(), memento, Room.GetUnloadedInstance, Room.GetNullInstance);
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+        }
+
+        // Predecessor access
+        public Room Room
+        {
+            get { return IsNull ? Room.GetNullInstance() : _room.Fact; }
+        }
+
+        // Field access
+
+        // Query result access
+
+        // Mutable property access
+
+    }
+    
     public partial class Group : CorrespondenceFact
     {
 		// Factory
@@ -857,8 +1021,34 @@ namespace TrainingRooms.Model
             }
             return _cacheQueryName;
 		}
+        private static Query _cacheQueryImageUrl;
+
+        public static Query GetQueryImageUrl()
+		{
+            if (_cacheQueryImageUrl == null)
+            {
+			    _cacheQueryImageUrl = new Query()
+    				.JoinSuccessors(Group__imageUrl.GetRoleGroup(), Condition.WhereIsEmpty(Group__imageUrl.GetQueryIsCurrent())
+				)
+                ;
+            }
+            return _cacheQueryImageUrl;
+		}
+        private static Query _cacheQueryIsDeleted;
+
+        public static Query GetQueryIsDeleted()
+		{
+            if (_cacheQueryIsDeleted == null)
+            {
+			    _cacheQueryIsDeleted = new Query()
+		    		.JoinSuccessors(GroupDelete.GetRoleGroup())
+                ;
+            }
+            return _cacheQueryIsDeleted;
+		}
 
         // Predicates
+        public static Condition IsDeleted = Condition.WhereIsNotEmpty(GetQueryIsDeleted());
 
         // Predecessors
         private PredecessorObj<Venue> _venue;
@@ -870,6 +1060,7 @@ namespace TrainingRooms.Model
 
         // Results
         private Result<Group__name> _name;
+        private Result<Group__imageUrl> _imageUrl;
 
         // Business constructor
         public Group(
@@ -892,6 +1083,7 @@ namespace TrainingRooms.Model
         private void InitializeResults()
         {
             _name = new Result<Group__name>(this, GetQueryName(), Group__name.GetUnloadedInstance, Group__name.GetNullInstance);
+            _imageUrl = new Result<Group__imageUrl>(this, GetQueryImageUrl(), Group__imageUrl.GetUnloadedInstance, Group__imageUrl.GetNullInstance);
         }
 
         // Predecessor access
@@ -918,6 +1110,21 @@ namespace TrainingRooms.Model
                     if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
                     {
                         await Community.AddFactAsync(new Group__name(this, _name, value.Value));
+                    }
+                });
+			}
+        }
+        public TransientDisputable<Group__imageUrl, string> ImageUrl
+        {
+            get { return _imageUrl.AsTransientDisputable(fact => fact.Value); }
+			set
+			{
+                Community.Perform(async delegate()
+                {
+                    var current = (await _imageUrl.EnsureAsync()).ToList();
+                    if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
+                    {
+                        await Community.AddFactAsync(new Group__imageUrl(this, _imageUrl, value.Value));
                     }
                 });
 			}
@@ -1094,6 +1301,308 @@ namespace TrainingRooms.Model
         {
             get { return _value; }
         }
+
+        // Query result access
+
+        // Mutable property access
+
+    }
+    
+    public partial class Group__imageUrl : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				Group__imageUrl newFact = new Group__imageUrl(memento);
+
+				// Create a memory stream from the memento data.
+				using (MemoryStream data = new MemoryStream(memento.Data))
+				{
+					using (BinaryReader output = new BinaryReader(data))
+					{
+						newFact._value = (string)_fieldSerializerByType[typeof(string)].ReadData(output);
+					}
+				}
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				Group__imageUrl fact = (Group__imageUrl)obj;
+				_fieldSerializerByType[typeof(string)].WriteData(output, fact._value);
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return Group__imageUrl.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return Group__imageUrl.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"TrainingRooms.Model.Group__imageUrl", -1825605400);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static Group__imageUrl GetUnloadedInstance()
+        {
+            return new Group__imageUrl((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static Group__imageUrl GetNullInstance()
+        {
+            return new Group__imageUrl((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<Group__imageUrl> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (Group__imageUrl)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+        private static Role _cacheRoleGroup;
+        public static Role GetRoleGroup()
+        {
+            if (_cacheRoleGroup == null)
+            {
+                _cacheRoleGroup = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "group",
+			        Group._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleGroup;
+        }
+        private static Role _cacheRolePrior;
+        public static Role GetRolePrior()
+        {
+            if (_cacheRolePrior == null)
+            {
+                _cacheRolePrior = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "prior",
+			        Group__imageUrl._correspondenceFactType,
+			        false));
+            }
+            return _cacheRolePrior;
+        }
+
+        // Queries
+        private static Query _cacheQueryIsCurrent;
+
+        public static Query GetQueryIsCurrent()
+		{
+            if (_cacheQueryIsCurrent == null)
+            {
+			    _cacheQueryIsCurrent = new Query()
+		    		.JoinSuccessors(Group__imageUrl.GetRolePrior())
+                ;
+            }
+            return _cacheQueryIsCurrent;
+		}
+
+        // Predicates
+        public static Condition IsCurrent = Condition.WhereIsEmpty(GetQueryIsCurrent());
+
+        // Predecessors
+        private PredecessorObj<Group> _group;
+        private PredecessorList<Group__imageUrl> _prior;
+
+        // Fields
+        private string _value;
+
+        // Results
+
+        // Business constructor
+        public Group__imageUrl(
+            Group group
+            ,IEnumerable<Group__imageUrl> prior
+            ,string value
+            )
+        {
+            InitializeResults();
+            _group = new PredecessorObj<Group>(this, GetRoleGroup(), group);
+            _prior = new PredecessorList<Group__imageUrl>(this, GetRolePrior(), prior);
+            _value = value;
+        }
+
+        // Hydration constructor
+        private Group__imageUrl(FactMemento memento)
+        {
+            InitializeResults();
+            _group = new PredecessorObj<Group>(this, GetRoleGroup(), memento, Group.GetUnloadedInstance, Group.GetNullInstance);
+            _prior = new PredecessorList<Group__imageUrl>(this, GetRolePrior(), memento, Group__imageUrl.GetUnloadedInstance, Group__imageUrl.GetNullInstance);
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+        }
+
+        // Predecessor access
+        public Group Group
+        {
+            get { return IsNull ? Group.GetNullInstance() : _group.Fact; }
+        }
+        public PredecessorList<Group__imageUrl> Prior
+        {
+            get { return _prior; }
+        }
+
+        // Field access
+        public string Value
+        {
+            get { return _value; }
+        }
+
+        // Query result access
+
+        // Mutable property access
+
+    }
+    
+    public partial class GroupDelete : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				GroupDelete newFact = new GroupDelete(memento);
+
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				GroupDelete fact = (GroupDelete)obj;
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return GroupDelete.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return GroupDelete.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"TrainingRooms.Model.GroupDelete", 1241936520);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static GroupDelete GetUnloadedInstance()
+        {
+            return new GroupDelete((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static GroupDelete GetNullInstance()
+        {
+            return new GroupDelete((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<GroupDelete> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (GroupDelete)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+        private static Role _cacheRoleGroup;
+        public static Role GetRoleGroup()
+        {
+            if (_cacheRoleGroup == null)
+            {
+                _cacheRoleGroup = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "group",
+			        Group._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleGroup;
+        }
+
+        // Queries
+
+        // Predicates
+
+        // Predecessors
+        private PredecessorObj<Group> _group;
+
+        // Fields
+
+        // Results
+
+        // Business constructor
+        public GroupDelete(
+            Group group
+            )
+        {
+            InitializeResults();
+            _group = new PredecessorObj<Group>(this, GetRoleGroup(), group);
+        }
+
+        // Hydration constructor
+        private GroupDelete(FactMemento memento)
+        {
+            InitializeResults();
+            _group = new PredecessorObj<Group>(this, GetRoleGroup(), memento, Group.GetUnloadedInstance, Group.GetNullInstance);
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+        }
+
+        // Predecessor access
+        public Group Group
+        {
+            get { return IsNull ? Group.GetNullInstance() : _group.Fact; }
+        }
+
+        // Field access
 
         // Query result access
 
@@ -1288,6 +1797,7 @@ namespace TrainingRooms.Model
 					using (BinaryReader output = new BinaryReader(data))
 					{
 						newFact._unique = (Guid)_fieldSerializerByType[typeof(Guid)].ReadData(output);
+						newFact._when = (DateTime)_fieldSerializerByType[typeof(DateTime)].ReadData(output);
 					}
 				}
 
@@ -1298,6 +1808,7 @@ namespace TrainingRooms.Model
 			{
 				Event fact = (Event)obj;
 				_fieldSerializerByType[typeof(Guid)].WriteData(output, fact._unique);
+				_fieldSerializerByType[typeof(DateTime)].WriteData(output, fact._when);
 			}
 
             public CorrespondenceFact GetUnloadedInstance()
@@ -1313,7 +1824,7 @@ namespace TrainingRooms.Model
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.Event", 1015337858);
+			"TrainingRooms.Model.Event", -1087204922);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -1369,8 +1880,21 @@ namespace TrainingRooms.Model
         }
 
         // Queries
+        private static Query _cacheQueryIsDeleted;
+
+        public static Query GetQueryIsDeleted()
+		{
+            if (_cacheQueryIsDeleted == null)
+            {
+			    _cacheQueryIsDeleted = new Query()
+		    		.JoinSuccessors(EventDelete.GetRoleDeletedEvent())
+                ;
+            }
+            return _cacheQueryIsDeleted;
+		}
 
         // Predicates
+        public static Condition IsDeleted = Condition.WhereIsNotEmpty(GetQueryIsDeleted());
 
         // Predecessors
         private PredecessorObj<Schedule> _schedule;
@@ -1380,6 +1904,7 @@ namespace TrainingRooms.Model
         private Guid _unique;
 
         // Fields
+        private DateTime _when;
 
         // Results
 
@@ -1387,12 +1912,14 @@ namespace TrainingRooms.Model
         public Event(
             Schedule schedule
             ,Group group
+            ,DateTime when
             )
         {
             _unique = Guid.NewGuid();
             InitializeResults();
             _schedule = new PredecessorObj<Schedule>(this, GetRoleSchedule(), schedule);
             _group = new PredecessorObj<Group>(this, GetRoleGroup(), group);
+            _when = when;
         }
 
         // Hydration constructor
@@ -1421,6 +1948,136 @@ namespace TrainingRooms.Model
         // Field access
 		public Guid Unique { get { return _unique; } }
 
+        public DateTime When
+        {
+            get { return _when; }
+        }
+
+        // Query result access
+
+        // Mutable property access
+
+    }
+    
+    public partial class EventDelete : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				EventDelete newFact = new EventDelete(memento);
+
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				EventDelete fact = (EventDelete)obj;
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return EventDelete.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return EventDelete.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"TrainingRooms.Model.EventDelete", -1112682424);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static EventDelete GetUnloadedInstance()
+        {
+            return new EventDelete((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static EventDelete GetNullInstance()
+        {
+            return new EventDelete((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<EventDelete> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (EventDelete)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+        private static Role _cacheRoleDeletedEvent;
+        public static Role GetRoleDeletedEvent()
+        {
+            if (_cacheRoleDeletedEvent == null)
+            {
+                _cacheRoleDeletedEvent = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "deletedEvent",
+			        Event._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleDeletedEvent;
+        }
+
+        // Queries
+
+        // Predicates
+
+        // Predecessors
+        private PredecessorObj<Event> _deletedEvent;
+
+        // Fields
+
+        // Results
+
+        // Business constructor
+        public EventDelete(
+            Event deletedEvent
+            )
+        {
+            InitializeResults();
+            _deletedEvent = new PredecessorObj<Event>(this, GetRoleDeletedEvent(), deletedEvent);
+        }
+
+        // Hydration constructor
+        private EventDelete(FactMemento memento)
+        {
+            InitializeResults();
+            _deletedEvent = new PredecessorObj<Event>(this, GetRoleDeletedEvent(), memento, Event.GetUnloadedInstance, Event.GetNullInstance);
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+        }
+
+        // Predecessor access
+        public Event DeletedEvent
+        {
+            get { return IsNull ? Event.GetNullInstance() : _deletedEvent.Fact; }
+        }
+
+        // Field access
 
         // Query result access
 
@@ -1444,6 +2101,9 @@ namespace TrainingRooms.Model
 			community.AddQuery(
 				Venue._correspondenceFactType,
 				Venue.GetQueryRooms().QueryDefinition);
+			community.AddQuery(
+				Venue._correspondenceFactType,
+				Venue.GetQueryGroups().QueryDefinition);
 			community.AddType(
 				Day._correspondenceFactType,
 				new Day.CorrespondenceFactFactory(fieldSerializerByType),
@@ -1455,6 +2115,9 @@ namespace TrainingRooms.Model
 			community.AddQuery(
 				Room._correspondenceFactType,
 				Room.GetQueryName().QueryDefinition);
+			community.AddQuery(
+				Room._correspondenceFactType,
+				Room.GetQueryIsDeleted().QueryDefinition);
 			community.AddType(
 				Room__name._correspondenceFactType,
 				new Room__name.CorrespondenceFactFactory(fieldSerializerByType),
@@ -1463,12 +2126,22 @@ namespace TrainingRooms.Model
 				Room__name._correspondenceFactType,
 				Room__name.GetQueryIsCurrent().QueryDefinition);
 			community.AddType(
+				RoomDelete._correspondenceFactType,
+				new RoomDelete.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { RoomDelete._correspondenceFactType }));
+			community.AddType(
 				Group._correspondenceFactType,
 				new Group.CorrespondenceFactFactory(fieldSerializerByType),
 				new FactMetadata(new List<CorrespondenceFactType> { Group._correspondenceFactType }));
 			community.AddQuery(
 				Group._correspondenceFactType,
 				Group.GetQueryName().QueryDefinition);
+			community.AddQuery(
+				Group._correspondenceFactType,
+				Group.GetQueryImageUrl().QueryDefinition);
+			community.AddQuery(
+				Group._correspondenceFactType,
+				Group.GetQueryIsDeleted().QueryDefinition);
 			community.AddType(
 				Group__name._correspondenceFactType,
 				new Group__name.CorrespondenceFactFactory(fieldSerializerByType),
@@ -1476,6 +2149,17 @@ namespace TrainingRooms.Model
 			community.AddQuery(
 				Group__name._correspondenceFactType,
 				Group__name.GetQueryIsCurrent().QueryDefinition);
+			community.AddType(
+				Group__imageUrl._correspondenceFactType,
+				new Group__imageUrl.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { Group__imageUrl._correspondenceFactType }));
+			community.AddQuery(
+				Group__imageUrl._correspondenceFactType,
+				Group__imageUrl.GetQueryIsCurrent().QueryDefinition);
+			community.AddType(
+				GroupDelete._correspondenceFactType,
+				new GroupDelete.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { GroupDelete._correspondenceFactType }));
 			community.AddType(
 				Schedule._correspondenceFactType,
 				new Schedule.CorrespondenceFactFactory(fieldSerializerByType),
@@ -1487,6 +2171,13 @@ namespace TrainingRooms.Model
 				Event._correspondenceFactType,
 				new Event.CorrespondenceFactFactory(fieldSerializerByType),
 				new FactMetadata(new List<CorrespondenceFactType> { Event._correspondenceFactType }));
+			community.AddQuery(
+				Event._correspondenceFactType,
+				Event.GetQueryIsDeleted().QueryDefinition);
+			community.AddType(
+				EventDelete._correspondenceFactType,
+				new EventDelete.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { EventDelete._correspondenceFactType }));
 		}
 	}
 }
