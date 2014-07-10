@@ -58,10 +58,8 @@ namespace TrainingRooms.Tests
 
             var room = await _improving.NewRoom();
             var group = await _improving.NewGroup();
-            var day = await _community.AddFactAsync(new Day(new DateTime(2014, 7, 9)));
-            var roomDay = await _community.AddFactAsync(new Schedule(room, day));
-            var upcommingEvent = await _improving.Community.AddFactAsync(
-                new Event(roomDay, group, new DateTime(2014, 7, 9, 18, 0, 0)));
+            var upcommingEvent = await room.NewEvent(
+                group, new DateTime(2014, 7, 9, 18, 0, 0));
 
             var today = await room.ScheduleFor(new DateTime(2014, 7, 9));
 

@@ -13,5 +13,13 @@ namespace TrainingRooms.Model
             var day = await Community.AddFactAsync(new Day(date));
             return await Community.AddFactAsync(new Schedule(this, day));
         }
+
+        public async Task<Event> NewEvent(Group group, DateTime time)
+        {
+            var schedule = await ScheduleFor(time.Date);
+            var upcommingEvent = await Community.AddFactAsync(
+                new Event(schedule, group, time));
+            return upcommingEvent;
+        }
     }
 }
