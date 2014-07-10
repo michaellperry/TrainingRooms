@@ -153,6 +153,126 @@ namespace TrainingRooms.Model
 
     }
     
+    public partial class Installation : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				Installation newFact = new Installation(memento);
+
+				// Create a memory stream from the memento data.
+				using (MemoryStream data = new MemoryStream(memento.Data))
+				{
+					using (BinaryReader output = new BinaryReader(data))
+					{
+						newFact._unique = (Guid)_fieldSerializerByType[typeof(Guid)].ReadData(output);
+					}
+				}
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				Installation fact = (Installation)obj;
+				_fieldSerializerByType[typeof(Guid)].WriteData(output, fact._unique);
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return Installation.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return Installation.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"TrainingRooms.Model.Installation", 2);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static Installation GetUnloadedInstance()
+        {
+            return new Installation((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static Installation GetNullInstance()
+        {
+            return new Installation((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<Installation> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (Installation)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+
+        // Queries
+
+        // Predicates
+
+        // Predecessors
+
+        // Unique
+        private Guid _unique;
+
+        // Fields
+
+        // Results
+
+        // Business constructor
+        public Installation(
+            )
+        {
+            _unique = Guid.NewGuid();
+            InitializeResults();
+        }
+
+        // Hydration constructor
+        private Installation(FactMemento memento)
+        {
+            InitializeResults();
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+        }
+
+        // Predecessor access
+
+        // Field access
+		public Guid Unique { get { return _unique; } }
+
+
+        // Query result access
+
+        // Mutable property access
+
+    }
+    
     public partial class Venue : CorrespondenceFact
     {
 		// Factory
@@ -2094,6 +2214,10 @@ namespace TrainingRooms.Model
 				Individual._correspondenceFactType,
 				new Individual.CorrespondenceFactFactory(fieldSerializerByType),
 				new FactMetadata(new List<CorrespondenceFactType> { Individual._correspondenceFactType }));
+			community.AddType(
+				Installation._correspondenceFactType,
+				new Installation.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { Installation._correspondenceFactType }));
 			community.AddType(
 				Venue._correspondenceFactType,
 				new Venue.CorrespondenceFactFactory(fieldSerializerByType),

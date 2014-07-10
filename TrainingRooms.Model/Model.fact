@@ -5,6 +5,11 @@ key:
     string anonymousId;
 }
 
+fact Installation {
+key:
+	unique;
+}
+
 fact Venue {
 key:
 	unique;
