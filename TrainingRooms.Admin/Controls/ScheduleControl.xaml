@@ -3,18 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:TrainingRooms.Admin.Controls" x:Class="TrainingRooms.Admin.Controls.ScheduleControl" 
+             xmlns:local="clr-namespace:TrainingRooms.Admin.Controls" xmlns:DataSources="clr-namespace:TrainingRooms.Admin.DataSources" x:Class="TrainingRooms.Admin.Controls.ScheduleControl" 
              mc:Ignorable="d">
-	<Grid HorizontalAlignment="Left">
+	<UserControl.Resources>
+		<DataSources:DesignModeDataSource x:Key="DesignModeDataSourceDataSource" d:IsDataSource="True"/>
+		<ItemsPanelTemplate x:Key="EventItemsControlPanelTemplate">
+			<StackPanel IsItemsHost="True" Orientation="Horizontal"/>
+		</ItemsPanelTemplate>
+		<DataTemplate x:Key="EventViewModelTemplate">
+			<local:EventCardControl Margin="5"/>
+		</DataTemplate>
+	</UserControl.Resources>
+	<Grid HorizontalAlignment="Left" d:DataContext="{Binding Schedule, Mode=OneWay, Source={StaticResource DesignModeDataSourceDataSource}}" Height="105">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="127"/>
 			<ColumnDefinition/>
 		</Grid.ColumnDefinitions>
-		<TextBox TextWrapping="Wrap" Text="Training Room A" VerticalAlignment="Top" Margin="5,5,22,0"/>
+		<TextBox TextWrapping="Wrap" Text="{Binding RoomName}" VerticalAlignment="Top" Margin="5,5,22,0"/>
 		<Button Content="X" HorizontalAlignment="Left" Height="17.96" Margin="110,5,0,0" VerticalAlignment="Top" Width="12"/>
 		<StackPanel Grid.Column="1" Orientation="Horizontal">
-			<local:EventCardControl Margin="5"/>
-			<local:EventCardControl Margin="5"/>
+			<ItemsControl ItemsPanel="{DynamicResource EventItemsControlPanelTemplate}" ItemTemplate="{DynamicResource EventViewModelTemplate}" ItemsSource="{Binding Events}"></ItemsControl>
 			<Button Content="New Event" HorizontalAlignment="Left" Height="25" VerticalAlignment="Center" Width="85" Margin="5"/>
 		</StackPanel>
 	</Grid>

@@ -86,9 +86,12 @@
     <Compile Include="Controls\ScheduleControl.xaml.cs">
       <DependentUpon>ScheduleControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DataSources\DesignModeDataSource.cs" />
     <Compile Include="HTTPConfigurationProvider.cs" />
     <Compile Include="SynchronizationService.cs" />
+    <Compile Include="ViewModels\EventViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\ScheduleViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Page Include="Controls\EventCardControl.xaml">
       <SubType>Designer</SubType>

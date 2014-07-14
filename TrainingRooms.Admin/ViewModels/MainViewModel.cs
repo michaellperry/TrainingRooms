@@ -19,6 +19,9 @@ namespace TrainingRooms.Admin.ViewModels
             _installation = installation;
         }
 
+        public DateTime SeletedDate { get; set; }
+        public List<ScheduleViewModel> Schedules { get; set; }
+
         public bool Synchronizing
         {
             get { return _community.Synchronizing; }

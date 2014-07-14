@@ -3,26 +3,41 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     xmlns:Controls="clr-namespace:TrainingRooms.Admin.Controls" 
+    xmlns:DataSources="clr-namespace:TrainingRooms.Admin.DataSources" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
     x:Class="TrainingRooms.Admin.MainWindow" 
     Title="Training Rooms" 
     Height="578.525" 
     Width="759" 
-    DataContext="{Binding Main, Source={StaticResource Locator}}">
-	<Grid>
-		<DatePicker HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+    >
+	<Window.Resources>
+		<DataSources:DesignModeDataSource x:Key="DesignModeDataSourceDataSource" d:IsDataSource="True"/>
+		<DataTemplate x:Key="ScheduleViewModelTemplate">
+			<Controls:ScheduleControl x:Name="schedule"/>
+			<DataTemplate.Triggers>
+				<Trigger Property="ItemsControl.AlternationIndex" Value="0">
+					<Setter Property="Background" Value="#FFFFFFFF" TargetName="schedule"/>
+				</Trigger>
+				<Trigger Property="ItemsControl.AlternationIndex" Value="1">
+					<Setter Property="Background" Value="#FFF7F7F7" TargetName="schedule"/>
+				</Trigger>
+			</DataTemplate.Triggers>
+		</DataTemplate>
+	</Window.Resources>
+	<Window.DataContext>
+		<Binding Path="Main" Source="{StaticResource Locator}"/>
+	</Window.DataContext>
+	<Grid d:DataContext="{Binding Main, Mode=OneWay, Source={StaticResource DesignModeDataSourceDataSource}}">
+		<DatePicker HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" SelectedDate="{Binding SeletedDate}" Width="100"/>
 		<ScrollViewer Margin="55,57,0,0" HorizontalScrollBarVisibility="Visible">
 			<StackPanel VerticalAlignment="Top">
-				<Controls:ScheduleControl/>
-				<Controls:ScheduleControl/>
-				<Controls:ScheduleControl/>
-				<Controls:ScheduleControl/>
+				<ItemsControl ItemTemplate="{DynamicResource ScheduleViewModelTemplate}" ItemsSource="{Binding Schedules}" AlternationCount="2"></ItemsControl>
 				<Grid Margin="0,0,0,-42">
 					<Button Content="New Room" HorizontalAlignment="Left" Height="25" Margin="5" VerticalAlignment="Top" Width="85"/>
 				</Grid>
 			</StackPanel>
 		</ScrollViewer>
-		<Button Content="&lt;" HorizontalAlignment="Left" Height="24" Margin="116.64,10,0,0" VerticalAlignment="Top" Width="13.36"/>
-		<Button Content="&gt;" HorizontalAlignment="Left" Height="24" Margin="135,10,0,0" VerticalAlignment="Top" Width="13.36"/>
+		<Button Content="&lt;" HorizontalAlignment="Left" Height="24" Margin="115,10,0,0" VerticalAlignment="Top" Width="13.36"/>
+		<Button Content="&gt;" HorizontalAlignment="Left" Height="24" Margin="133.36,10,0,0" VerticalAlignment="Top" Width="13.36"/>
         
 	</Grid>
 </Window>
