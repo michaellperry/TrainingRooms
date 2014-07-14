@@ -3,12 +3,15 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     xmlns:Controls="clr-namespace:TrainingRooms.Admin.Controls" 
-    xmlns:DataSources="clr-namespace:TrainingRooms.Admin.DataSources" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
+    xmlns:DataSources="clr-namespace:TrainingRooms.Admin.DataSources" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    mc:Ignorable="d" 
     x:Class="TrainingRooms.Admin.MainWindow" 
+    DataContext="{Binding Main, Source={StaticResource Locator}}"
     Title="Training Rooms" 
     Height="578.525" 
-    Width="759" 
-    >
+    Width="759">
 	<Window.Resources>
 		<DataSources:DesignModeDataSource x:Key="DesignModeDataSourceDataSource" d:IsDataSource="True"/>
 		<DataTemplate x:Key="ScheduleViewModelTemplate">
@@ -23,9 +26,6 @@
 			</DataTemplate.Triggers>
 		</DataTemplate>
 	</Window.Resources>
-	<Window.DataContext>
-		<Binding Path="Main" Source="{StaticResource Locator}"/>
-	</Window.DataContext>
 	<Grid d:DataContext="{Binding Main, Mode=OneWay, Source={StaticResource DesignModeDataSourceDataSource}}">
 		<DatePicker HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" SelectedDate="{Binding SeletedDate}" Width="100"/>
 		<ScrollViewer Margin="55,57,0,0" HorizontalScrollBarVisibility="Visible">

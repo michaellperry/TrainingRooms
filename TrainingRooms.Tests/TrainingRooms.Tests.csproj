@@ -66,11 +66,16 @@
   <ItemGroup>
     <Compile Include="ModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DesignModeDataTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TrainingRooms.Admin\TrainingRooms.Admin.csproj">
+      <Project>{70b4c2b4-9949-4add-990e-1c07520baf09}</Project>
+      <Name>TrainingRooms.Admin</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TrainingRooms.Model\TrainingRooms.Model.csproj">
       <Project>{620da39b-98ff-47c4-b17e-6a6fbae98d31}</Project>
       <Name>TrainingRooms.Model</Name>
