@@ -17,8 +17,11 @@ namespace TrainingRooms.Model
         public async Task<Event> NewEvent(Group group, DateTime time)
         {
             var schedule = await ScheduleFor(time.Date);
-            var upcommingEvent = await Community.AddFactAsync(
-                new Event(schedule, group, time));
+            var upcommingEvent = await Community.AddFactAsync(new Event());
+            upcommingEvent.Group = group;
+            upcommingEvent.Start = time;
+            await Community.AddFactAsync(new EventSchedule(
+                upcommingEvent, schedule, Enumerable.Empty<EventSchedule>()));
             return upcommingEvent;
         }
     }

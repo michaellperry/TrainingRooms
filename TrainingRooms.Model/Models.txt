@@ -13,7 +13,15 @@ digraph "TrainingRooms.Model"
     GroupDelete -> Group
     Schedule -> Room
     Schedule -> Day
-    Event -> Schedule
-    Event -> Group
+    Event__group -> Event
+    Event__group -> Event__group [label="  *"]
+    Event__group -> Group
+    Event__start -> Event
+    Event__start -> Event__start [label="  *"]
+    Event__end -> Event
+    Event__end -> Event__end [label="  *"]
+    EventSchedule -> Event
+    EventSchedule -> Schedule
+    EventSchedule -> EventSchedule [label="  *"]
     EventDelete -> Event
 }

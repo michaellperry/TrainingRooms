@@ -77,20 +77,41 @@ key:
 
 query:
 	Event* events {
-		Event e : e.schedule = this
+		EventSchedule es : es.schedule = this
+			where es.isCurrent
+		Event e : e = es.event
 	}
 }
 
 fact Event {
 key:
 	unique;
-	Schedule schedule;
+
+mutable:
 	Group group;
-	time when;
+	time start;
+	time end;
 
 query:
 	bool isDeleted {
 		exists EventDelete d : d.deletedEvent = this
+	}
+
+	EventSchedule* eventSchedules {
+		EventSchedule es : es.event = this
+			where es.isCurrent
+	}
+}
+
+fact EventSchedule {
+key:
+	Event event;
+	Schedule schedule;
+	EventSchedule* prior;
+
+query:
+	bool isCurrent {
+		not exists EventSchedule next : next.prior = this
 	}
 }
 

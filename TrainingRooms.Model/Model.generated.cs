@@ -24,8 +24,16 @@ digraph "TrainingRooms.Model"
     GroupDelete -> Group
     Schedule -> Room
     Schedule -> Day
-    Event -> Schedule
-    Event -> Group
+    Event__group -> Event
+    Event__group -> Event__group [label="  *"]
+    Event__group -> Group
+    Event__start -> Event
+    Event__start -> Event__start [label="  *"]
+    Event__end -> Event
+    Event__end -> Event__end [label="  *"]
+    EventSchedule -> Event
+    EventSchedule -> Schedule
+    EventSchedule -> EventSchedule [label="  *"]
     EventDelete -> Event
 }
 **/
@@ -684,12 +692,12 @@ namespace TrainingRooms.Model
 
         // Business constructor
         public Room(
-            Venue venue
+            Venue @venue
             )
         {
             _unique = Guid.NewGuid();
             InitializeResults();
-            _venue = new PredecessorObj<Venue>(this, GetRoleVenue(), venue);
+            _venue = new PredecessorObj<Venue>(this, GetRoleVenue(), @venue);
         }
 
         // Hydration constructor
@@ -866,14 +874,14 @@ namespace TrainingRooms.Model
 
         // Business constructor
         public Room__name(
-            Room room
-            ,IEnumerable<Room__name> prior
+            Room @room
+            ,IEnumerable<Room__name> @prior
             ,string value
             )
         {
             InitializeResults();
-            _room = new PredecessorObj<Room>(this, GetRoleRoom(), room);
-            _prior = new PredecessorList<Room__name>(this, GetRolePrior(), prior);
+            _room = new PredecessorObj<Room>(this, GetRoleRoom(), @room);
+            _prior = new PredecessorList<Room__name>(this, GetRolePrior(), @prior);
             _value = value;
         }
 
@@ -1005,11 +1013,11 @@ namespace TrainingRooms.Model
 
         // Business constructor
         public RoomDelete(
-            Room room
+            Room @room
             )
         {
             InitializeResults();
-            _room = new PredecessorObj<Room>(this, GetRoleRoom(), room);
+            _room = new PredecessorObj<Room>(this, GetRoleRoom(), @room);
         }
 
         // Hydration constructor
@@ -1184,12 +1192,12 @@ namespace TrainingRooms.Model
 
         // Business constructor
         public Group(
-            Venue venue
+            Venue @venue
             )
         {
             _unique = Guid.NewGuid();
             InitializeResults();
-            _venue = new PredecessorObj<Venue>(this, GetRoleVenue(), venue);
+            _venue = new PredecessorObj<Venue>(this, GetRoleVenue(), @venue);
         }
 
         // Hydration constructor
@@ -1382,14 +1390,14 @@ namespace TrainingRooms.Model
 
         // Business constructor
         public Group__name(
-            Group group
-            ,IEnumerable<Group__name> prior
+            Group @group
+            ,IEnumerable<Group__name> @prior
             ,string value
             )
         {
             InitializeResults();
-            _group = new PredecessorObj<Group>(this, GetRoleGroup(), group);
-            _prior = new PredecessorList<Group__name>(this, GetRolePrior(), prior);
+            _group = new PredecessorObj<Group>(this, GetRoleGroup(), @group);
+            _prior = new PredecessorList<Group__name>(this, GetRolePrior(), @prior);
             _value = value;
         }
 
@@ -1558,14 +1566,14 @@ namespace TrainingRooms.Model
 
         // Business constructor
         public Group__imageUrl(
-            Group group
-            ,IEnumerable<Group__imageUrl> prior
+            Group @group
+            ,IEnumerable<Group__imageUrl> @prior
             ,string value
             )
         {
             InitializeResults();
-            _group = new PredecessorObj<Group>(this, GetRoleGroup(), group);
-            _prior = new PredecessorList<Group__imageUrl>(this, GetRolePrior(), prior);
+            _group = new PredecessorObj<Group>(this, GetRoleGroup(), @group);
+            _prior = new PredecessorList<Group__imageUrl>(this, GetRolePrior(), @prior);
             _value = value;
         }
 
@@ -1697,11 +1705,11 @@ namespace TrainingRooms.Model
 
         // Business constructor
         public GroupDelete(
-            Group group
+            Group @group
             )
         {
             InitializeResults();
-            _group = new PredecessorObj<Group>(this, GetRoleGroup(), group);
+            _group = new PredecessorObj<Group>(this, GetRoleGroup(), @group);
         }
 
         // Hydration constructor
@@ -1831,7 +1839,9 @@ namespace TrainingRooms.Model
             if (_cacheQueryEvents == null)
             {
 			    _cacheQueryEvents = new Query()
-		    		.JoinSuccessors(Event.GetRoleSchedule())
+    				.JoinSuccessors(EventSchedule.GetRoleSchedule(), Condition.WhereIsEmpty(EventSchedule.GetQueryIsCurrent())
+				)
+		    		.JoinPredecessors(EventSchedule.GetRoleEvent())
                 ;
             }
             return _cacheQueryEvents;
@@ -1850,13 +1860,13 @@ namespace TrainingRooms.Model
 
         // Business constructor
         public Schedule(
-            Room room
-            ,Day day
+            Room @room
+            ,Day @day
             )
         {
             InitializeResults();
-            _room = new PredecessorObj<Room>(this, GetRoleRoom(), room);
-            _day = new PredecessorObj<Day>(this, GetRoleDay(), day);
+            _room = new PredecessorObj<Room>(this, GetRoleRoom(), @room);
+            _day = new PredecessorObj<Day>(this, GetRoleDay(), @day);
         }
 
         // Hydration constructor
@@ -1917,7 +1927,6 @@ namespace TrainingRooms.Model
 					using (BinaryReader output = new BinaryReader(data))
 					{
 						newFact._unique = (Guid)_fieldSerializerByType[typeof(Guid)].ReadData(output);
-						newFact._when = (DateTime)_fieldSerializerByType[typeof(DateTime)].ReadData(output);
 					}
 				}
 
@@ -1928,7 +1937,6 @@ namespace TrainingRooms.Model
 			{
 				Event fact = (Event)obj;
 				_fieldSerializerByType[typeof(Guid)].WriteData(output, fact._unique);
-				_fieldSerializerByType[typeof(DateTime)].WriteData(output, fact._when);
 			}
 
             public CorrespondenceFact GetUnloadedInstance()
@@ -1944,7 +1952,7 @@ namespace TrainingRooms.Model
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.Event", -1087204922);
+			"TrainingRooms.Model.Event", 2);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -1972,6 +1980,785 @@ namespace TrainingRooms.Model
         }
 
         // Roles
+
+        // Queries
+        private static Query _cacheQueryGroup;
+
+        public static Query GetQueryGroup()
+		{
+            if (_cacheQueryGroup == null)
+            {
+			    _cacheQueryGroup = new Query()
+    				.JoinSuccessors(Event__group.GetRoleEvent(), Condition.WhereIsEmpty(Event__group.GetQueryIsCurrent())
+				)
+                ;
+            }
+            return _cacheQueryGroup;
+		}
+        private static Query _cacheQueryStart;
+
+        public static Query GetQueryStart()
+		{
+            if (_cacheQueryStart == null)
+            {
+			    _cacheQueryStart = new Query()
+    				.JoinSuccessors(Event__start.GetRoleEvent(), Condition.WhereIsEmpty(Event__start.GetQueryIsCurrent())
+				)
+                ;
+            }
+            return _cacheQueryStart;
+		}
+        private static Query _cacheQueryEnd;
+
+        public static Query GetQueryEnd()
+		{
+            if (_cacheQueryEnd == null)
+            {
+			    _cacheQueryEnd = new Query()
+    				.JoinSuccessors(Event__end.GetRoleEvent(), Condition.WhereIsEmpty(Event__end.GetQueryIsCurrent())
+				)
+                ;
+            }
+            return _cacheQueryEnd;
+		}
+        private static Query _cacheQueryIsDeleted;
+
+        public static Query GetQueryIsDeleted()
+		{
+            if (_cacheQueryIsDeleted == null)
+            {
+			    _cacheQueryIsDeleted = new Query()
+		    		.JoinSuccessors(EventDelete.GetRoleDeletedEvent())
+                ;
+            }
+            return _cacheQueryIsDeleted;
+		}
+        private static Query _cacheQueryEventSchedules;
+
+        public static Query GetQueryEventSchedules()
+		{
+            if (_cacheQueryEventSchedules == null)
+            {
+			    _cacheQueryEventSchedules = new Query()
+    				.JoinSuccessors(EventSchedule.GetRoleEvent(), Condition.WhereIsEmpty(EventSchedule.GetQueryIsCurrent())
+				)
+                ;
+            }
+            return _cacheQueryEventSchedules;
+		}
+
+        // Predicates
+        public static Condition IsDeleted = Condition.WhereIsNotEmpty(GetQueryIsDeleted());
+
+        // Predecessors
+
+        // Unique
+        private Guid _unique;
+
+        // Fields
+
+        // Results
+        private Result<Event__group> _group;
+        private Result<Event__start> _start;
+        private Result<Event__end> _end;
+        private Result<EventSchedule> _eventSchedules;
+
+        // Business constructor
+        public Event(
+            )
+        {
+            _unique = Guid.NewGuid();
+            InitializeResults();
+        }
+
+        // Hydration constructor
+        private Event(FactMemento memento)
+        {
+            InitializeResults();
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+            _group = new Result<Event__group>(this, GetQueryGroup(), Event__group.GetUnloadedInstance, Event__group.GetNullInstance);
+            _start = new Result<Event__start>(this, GetQueryStart(), Event__start.GetUnloadedInstance, Event__start.GetNullInstance);
+            _end = new Result<Event__end>(this, GetQueryEnd(), Event__end.GetUnloadedInstance, Event__end.GetNullInstance);
+            _eventSchedules = new Result<EventSchedule>(this, GetQueryEventSchedules(), EventSchedule.GetUnloadedInstance, EventSchedule.GetNullInstance);
+        }
+
+        // Predecessor access
+
+        // Field access
+		public Guid Unique { get { return _unique; } }
+
+
+        // Query result access
+        public Result<EventSchedule> EventSchedules
+        {
+            get { return _eventSchedules; }
+        }
+
+        // Mutable property access
+        public TransientDisputable<Event__start, DateTime> Start
+        {
+            get { return _start.AsTransientDisputable(fact => fact.Value); }
+			set
+			{
+                Community.Perform(async delegate()
+                {
+                    var current = (await _start.EnsureAsync()).ToList();
+                    if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
+                    {
+                        await Community.AddFactAsync(new Event__start(this, _start, value.Value));
+                    }
+                });
+			}
+        }
+        public TransientDisputable<Event__end, DateTime> End
+        {
+            get { return _end.AsTransientDisputable(fact => fact.Value); }
+			set
+			{
+                Community.Perform(async delegate()
+                {
+                    var current = (await _end.EnsureAsync()).ToList();
+                    if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
+                    {
+                        await Community.AddFactAsync(new Event__end(this, _end, value.Value));
+                    }
+                });
+			}
+        }
+
+        public TransientDisputable<Event__group, Group> Group
+        {
+            get { return _group.AsTransientDisputable(fact => (Group)fact.Value); }
+			set
+			{
+				Community.Perform(async delegate()
+				{
+					var current = (await _group.EnsureAsync()).ToList();
+					if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
+					{
+						await Community.AddFactAsync(new Event__group(this, _group, value.Value));
+					}
+				});
+			}
+        }
+    }
+    
+    public partial class Event__group : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				Event__group newFact = new Event__group(memento);
+
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				Event__group fact = (Event__group)obj;
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return Event__group.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return Event__group.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"TrainingRooms.Model.Event__group", 51168128);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static Event__group GetUnloadedInstance()
+        {
+            return new Event__group((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static Event__group GetNullInstance()
+        {
+            return new Event__group((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<Event__group> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (Event__group)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+        private static Role _cacheRoleEvent;
+        public static Role GetRoleEvent()
+        {
+            if (_cacheRoleEvent == null)
+            {
+                _cacheRoleEvent = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "event",
+			        Event._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleEvent;
+        }
+        private static Role _cacheRolePrior;
+        public static Role GetRolePrior()
+        {
+            if (_cacheRolePrior == null)
+            {
+                _cacheRolePrior = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "prior",
+			        Event__group._correspondenceFactType,
+			        false));
+            }
+            return _cacheRolePrior;
+        }
+        private static Role _cacheRoleValue;
+        public static Role GetRoleValue()
+        {
+            if (_cacheRoleValue == null)
+            {
+                _cacheRoleValue = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "value",
+			        Group._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleValue;
+        }
+
+        // Queries
+        private static Query _cacheQueryIsCurrent;
+
+        public static Query GetQueryIsCurrent()
+		{
+            if (_cacheQueryIsCurrent == null)
+            {
+			    _cacheQueryIsCurrent = new Query()
+		    		.JoinSuccessors(Event__group.GetRolePrior())
+                ;
+            }
+            return _cacheQueryIsCurrent;
+		}
+
+        // Predicates
+        public static Condition IsCurrent = Condition.WhereIsEmpty(GetQueryIsCurrent());
+
+        // Predecessors
+        private PredecessorObj<Event> _event;
+        private PredecessorList<Event__group> _prior;
+        private PredecessorObj<Group> _value;
+
+        // Fields
+
+        // Results
+
+        // Business constructor
+        public Event__group(
+            Event @event
+            ,IEnumerable<Event__group> @prior
+            ,Group @value
+            )
+        {
+            InitializeResults();
+            _event = new PredecessorObj<Event>(this, GetRoleEvent(), @event);
+            _prior = new PredecessorList<Event__group>(this, GetRolePrior(), @prior);
+            _value = new PredecessorObj<Group>(this, GetRoleValue(), @value);
+        }
+
+        // Hydration constructor
+        private Event__group(FactMemento memento)
+        {
+            InitializeResults();
+            _event = new PredecessorObj<Event>(this, GetRoleEvent(), memento, Event.GetUnloadedInstance, Event.GetNullInstance);
+            _prior = new PredecessorList<Event__group>(this, GetRolePrior(), memento, Event__group.GetUnloadedInstance, Event__group.GetNullInstance);
+            _value = new PredecessorObj<Group>(this, GetRoleValue(), memento, Group.GetUnloadedInstance, Group.GetNullInstance);
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+        }
+
+        // Predecessor access
+        public Event Event
+        {
+            get { return IsNull ? Event.GetNullInstance() : _event.Fact; }
+        }
+        public PredecessorList<Event__group> Prior
+        {
+            get { return _prior; }
+        }
+        public Group Value
+        {
+            get { return IsNull ? Group.GetNullInstance() : _value.Fact; }
+        }
+
+        // Field access
+
+        // Query result access
+
+        // Mutable property access
+
+    }
+    
+    public partial class Event__start : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				Event__start newFact = new Event__start(memento);
+
+				// Create a memory stream from the memento data.
+				using (MemoryStream data = new MemoryStream(memento.Data))
+				{
+					using (BinaryReader output = new BinaryReader(data))
+					{
+						newFact._value = (DateTime)_fieldSerializerByType[typeof(DateTime)].ReadData(output);
+					}
+				}
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				Event__start fact = (Event__start)obj;
+				_fieldSerializerByType[typeof(DateTime)].WriteData(output, fact._value);
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return Event__start.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return Event__start.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"TrainingRooms.Model.Event__start", 1071414996);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static Event__start GetUnloadedInstance()
+        {
+            return new Event__start((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static Event__start GetNullInstance()
+        {
+            return new Event__start((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<Event__start> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (Event__start)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+        private static Role _cacheRoleEvent;
+        public static Role GetRoleEvent()
+        {
+            if (_cacheRoleEvent == null)
+            {
+                _cacheRoleEvent = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "event",
+			        Event._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleEvent;
+        }
+        private static Role _cacheRolePrior;
+        public static Role GetRolePrior()
+        {
+            if (_cacheRolePrior == null)
+            {
+                _cacheRolePrior = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "prior",
+			        Event__start._correspondenceFactType,
+			        false));
+            }
+            return _cacheRolePrior;
+        }
+
+        // Queries
+        private static Query _cacheQueryIsCurrent;
+
+        public static Query GetQueryIsCurrent()
+		{
+            if (_cacheQueryIsCurrent == null)
+            {
+			    _cacheQueryIsCurrent = new Query()
+		    		.JoinSuccessors(Event__start.GetRolePrior())
+                ;
+            }
+            return _cacheQueryIsCurrent;
+		}
+
+        // Predicates
+        public static Condition IsCurrent = Condition.WhereIsEmpty(GetQueryIsCurrent());
+
+        // Predecessors
+        private PredecessorObj<Event> _event;
+        private PredecessorList<Event__start> _prior;
+
+        // Fields
+        private DateTime _value;
+
+        // Results
+
+        // Business constructor
+        public Event__start(
+            Event @event
+            ,IEnumerable<Event__start> @prior
+            ,DateTime value
+            )
+        {
+            InitializeResults();
+            _event = new PredecessorObj<Event>(this, GetRoleEvent(), @event);
+            _prior = new PredecessorList<Event__start>(this, GetRolePrior(), @prior);
+            _value = value;
+        }
+
+        // Hydration constructor
+        private Event__start(FactMemento memento)
+        {
+            InitializeResults();
+            _event = new PredecessorObj<Event>(this, GetRoleEvent(), memento, Event.GetUnloadedInstance, Event.GetNullInstance);
+            _prior = new PredecessorList<Event__start>(this, GetRolePrior(), memento, Event__start.GetUnloadedInstance, Event__start.GetNullInstance);
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+        }
+
+        // Predecessor access
+        public Event Event
+        {
+            get { return IsNull ? Event.GetNullInstance() : _event.Fact; }
+        }
+        public PredecessorList<Event__start> Prior
+        {
+            get { return _prior; }
+        }
+
+        // Field access
+        public DateTime Value
+        {
+            get { return _value; }
+        }
+
+        // Query result access
+
+        // Mutable property access
+
+    }
+    
+    public partial class Event__end : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				Event__end newFact = new Event__end(memento);
+
+				// Create a memory stream from the memento data.
+				using (MemoryStream data = new MemoryStream(memento.Data))
+				{
+					using (BinaryReader output = new BinaryReader(data))
+					{
+						newFact._value = (DateTime)_fieldSerializerByType[typeof(DateTime)].ReadData(output);
+					}
+				}
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				Event__end fact = (Event__end)obj;
+				_fieldSerializerByType[typeof(DateTime)].WriteData(output, fact._value);
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return Event__end.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return Event__end.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"TrainingRooms.Model.Event__end", 1071414996);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static Event__end GetUnloadedInstance()
+        {
+            return new Event__end((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static Event__end GetNullInstance()
+        {
+            return new Event__end((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<Event__end> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (Event__end)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+        private static Role _cacheRoleEvent;
+        public static Role GetRoleEvent()
+        {
+            if (_cacheRoleEvent == null)
+            {
+                _cacheRoleEvent = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "event",
+			        Event._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleEvent;
+        }
+        private static Role _cacheRolePrior;
+        public static Role GetRolePrior()
+        {
+            if (_cacheRolePrior == null)
+            {
+                _cacheRolePrior = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "prior",
+			        Event__end._correspondenceFactType,
+			        false));
+            }
+            return _cacheRolePrior;
+        }
+
+        // Queries
+        private static Query _cacheQueryIsCurrent;
+
+        public static Query GetQueryIsCurrent()
+		{
+            if (_cacheQueryIsCurrent == null)
+            {
+			    _cacheQueryIsCurrent = new Query()
+		    		.JoinSuccessors(Event__end.GetRolePrior())
+                ;
+            }
+            return _cacheQueryIsCurrent;
+		}
+
+        // Predicates
+        public static Condition IsCurrent = Condition.WhereIsEmpty(GetQueryIsCurrent());
+
+        // Predecessors
+        private PredecessorObj<Event> _event;
+        private PredecessorList<Event__end> _prior;
+
+        // Fields
+        private DateTime _value;
+
+        // Results
+
+        // Business constructor
+        public Event__end(
+            Event @event
+            ,IEnumerable<Event__end> @prior
+            ,DateTime value
+            )
+        {
+            InitializeResults();
+            _event = new PredecessorObj<Event>(this, GetRoleEvent(), @event);
+            _prior = new PredecessorList<Event__end>(this, GetRolePrior(), @prior);
+            _value = value;
+        }
+
+        // Hydration constructor
+        private Event__end(FactMemento memento)
+        {
+            InitializeResults();
+            _event = new PredecessorObj<Event>(this, GetRoleEvent(), memento, Event.GetUnloadedInstance, Event.GetNullInstance);
+            _prior = new PredecessorList<Event__end>(this, GetRolePrior(), memento, Event__end.GetUnloadedInstance, Event__end.GetNullInstance);
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+        }
+
+        // Predecessor access
+        public Event Event
+        {
+            get { return IsNull ? Event.GetNullInstance() : _event.Fact; }
+        }
+        public PredecessorList<Event__end> Prior
+        {
+            get { return _prior; }
+        }
+
+        // Field access
+        public DateTime Value
+        {
+            get { return _value; }
+        }
+
+        // Query result access
+
+        // Mutable property access
+
+    }
+    
+    public partial class EventSchedule : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				EventSchedule newFact = new EventSchedule(memento);
+
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				EventSchedule fact = (EventSchedule)obj;
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return EventSchedule.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return EventSchedule.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"TrainingRooms.Model.EventSchedule", 67871144);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static EventSchedule GetUnloadedInstance()
+        {
+            return new EventSchedule((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static EventSchedule GetNullInstance()
+        {
+            return new EventSchedule((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<EventSchedule> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (EventSchedule)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+        private static Role _cacheRoleEvent;
+        public static Role GetRoleEvent()
+        {
+            if (_cacheRoleEvent == null)
+            {
+                _cacheRoleEvent = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "event",
+			        Event._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleEvent;
+        }
         private static Role _cacheRoleSchedule;
         public static Role GetRoleSchedule()
         {
@@ -1985,69 +2772,66 @@ namespace TrainingRooms.Model
             }
             return _cacheRoleSchedule;
         }
-        private static Role _cacheRoleGroup;
-        public static Role GetRoleGroup()
+        private static Role _cacheRolePrior;
+        public static Role GetRolePrior()
         {
-            if (_cacheRoleGroup == null)
+            if (_cacheRolePrior == null)
             {
-                _cacheRoleGroup = new Role(new RoleMemento(
+                _cacheRolePrior = new Role(new RoleMemento(
 			        _correspondenceFactType,
-			        "group",
-			        Group._correspondenceFactType,
+			        "prior",
+			        EventSchedule._correspondenceFactType,
 			        false));
             }
-            return _cacheRoleGroup;
+            return _cacheRolePrior;
         }
 
         // Queries
-        private static Query _cacheQueryIsDeleted;
+        private static Query _cacheQueryIsCurrent;
 
-        public static Query GetQueryIsDeleted()
+        public static Query GetQueryIsCurrent()
 		{
-            if (_cacheQueryIsDeleted == null)
+            if (_cacheQueryIsCurrent == null)
             {
-			    _cacheQueryIsDeleted = new Query()
-		    		.JoinSuccessors(EventDelete.GetRoleDeletedEvent())
+			    _cacheQueryIsCurrent = new Query()
+		    		.JoinSuccessors(EventSchedule.GetRolePrior())
                 ;
             }
-            return _cacheQueryIsDeleted;
+            return _cacheQueryIsCurrent;
 		}
 
         // Predicates
-        public static Condition IsDeleted = Condition.WhereIsNotEmpty(GetQueryIsDeleted());
+        public static Condition IsCurrent = Condition.WhereIsEmpty(GetQueryIsCurrent());
 
         // Predecessors
+        private PredecessorObj<Event> _event;
         private PredecessorObj<Schedule> _schedule;
-        private PredecessorObj<Group> _group;
-
-        // Unique
-        private Guid _unique;
+        private PredecessorList<EventSchedule> _prior;
 
         // Fields
-        private DateTime _when;
 
         // Results
 
         // Business constructor
-        public Event(
-            Schedule schedule
-            ,Group group
-            ,DateTime when
+        public EventSchedule(
+            Event @event
+            ,Schedule @schedule
+            ,IEnumerable<EventSchedule> @prior
             )
         {
-            _unique = Guid.NewGuid();
             InitializeResults();
-            _schedule = new PredecessorObj<Schedule>(this, GetRoleSchedule(), schedule);
-            _group = new PredecessorObj<Group>(this, GetRoleGroup(), group);
-            _when = when;
+            _event = new PredecessorObj<Event>(this, GetRoleEvent(), @event);
+            _schedule = new PredecessorObj<Schedule>(this, GetRoleSchedule(), @schedule);
+            _prior = new PredecessorList<EventSchedule>(this, GetRolePrior(), @prior);
         }
 
         // Hydration constructor
-        private Event(FactMemento memento)
+        private EventSchedule(FactMemento memento)
         {
             InitializeResults();
+            _event = new PredecessorObj<Event>(this, GetRoleEvent(), memento, Event.GetUnloadedInstance, Event.GetNullInstance);
             _schedule = new PredecessorObj<Schedule>(this, GetRoleSchedule(), memento, Schedule.GetUnloadedInstance, Schedule.GetNullInstance);
-            _group = new PredecessorObj<Group>(this, GetRoleGroup(), memento, Group.GetUnloadedInstance, Group.GetNullInstance);
+            _prior = new PredecessorList<EventSchedule>(this, GetRolePrior(), memento, EventSchedule.GetUnloadedInstance, EventSchedule.GetNullInstance);
         }
 
         // Result initializer
@@ -2056,22 +2840,20 @@ namespace TrainingRooms.Model
         }
 
         // Predecessor access
+        public Event Event
+        {
+            get { return IsNull ? Event.GetNullInstance() : _event.Fact; }
+        }
         public Schedule Schedule
         {
             get { return IsNull ? Schedule.GetNullInstance() : _schedule.Fact; }
         }
-        public Group Group
+        public PredecessorList<EventSchedule> Prior
         {
-            get { return IsNull ? Group.GetNullInstance() : _group.Fact; }
+            get { return _prior; }
         }
 
         // Field access
-		public Guid Unique { get { return _unique; } }
-
-        public DateTime When
-        {
-            get { return _when; }
-        }
 
         // Query result access
 
@@ -2172,11 +2954,11 @@ namespace TrainingRooms.Model
 
         // Business constructor
         public EventDelete(
-            Event deletedEvent
+            Event @deletedEvent
             )
         {
             InitializeResults();
-            _deletedEvent = new PredecessorObj<Event>(this, GetRoleDeletedEvent(), deletedEvent);
+            _deletedEvent = new PredecessorObj<Event>(this, GetRoleDeletedEvent(), @deletedEvent);
         }
 
         // Hydration constructor
@@ -2297,7 +3079,47 @@ namespace TrainingRooms.Model
 				new FactMetadata(new List<CorrespondenceFactType> { Event._correspondenceFactType }));
 			community.AddQuery(
 				Event._correspondenceFactType,
+				Event.GetQueryGroup().QueryDefinition);
+			community.AddQuery(
+				Event._correspondenceFactType,
+				Event.GetQueryStart().QueryDefinition);
+			community.AddQuery(
+				Event._correspondenceFactType,
+				Event.GetQueryEnd().QueryDefinition);
+			community.AddQuery(
+				Event._correspondenceFactType,
 				Event.GetQueryIsDeleted().QueryDefinition);
+			community.AddQuery(
+				Event._correspondenceFactType,
+				Event.GetQueryEventSchedules().QueryDefinition);
+			community.AddType(
+				Event__group._correspondenceFactType,
+				new Event__group.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { Event__group._correspondenceFactType }));
+			community.AddQuery(
+				Event__group._correspondenceFactType,
+				Event__group.GetQueryIsCurrent().QueryDefinition);
+			community.AddType(
+				Event__start._correspondenceFactType,
+				new Event__start.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { Event__start._correspondenceFactType }));
+			community.AddQuery(
+				Event__start._correspondenceFactType,
+				Event__start.GetQueryIsCurrent().QueryDefinition);
+			community.AddType(
+				Event__end._correspondenceFactType,
+				new Event__end.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { Event__end._correspondenceFactType }));
+			community.AddQuery(
+				Event__end._correspondenceFactType,
+				Event__end.GetQueryIsCurrent().QueryDefinition);
+			community.AddType(
+				EventSchedule._correspondenceFactType,
+				new EventSchedule.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { EventSchedule._correspondenceFactType }));
+			community.AddQuery(
+				EventSchedule._correspondenceFactType,
+				EventSchedule.GetQueryIsCurrent().QueryDefinition);
 			community.AddType(
 				EventDelete._correspondenceFactType,
 				new EventDelete.CorrespondenceFactFactory(fieldSerializerByType),
