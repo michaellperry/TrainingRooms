@@ -88,6 +88,7 @@ query:
 		EventSchedule es : es.schedule = this
 			where es.isCurrent
 		Event e : e = es.event
+			where not e.isDeleted
 	}
 }
 

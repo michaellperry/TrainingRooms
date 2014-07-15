@@ -15,7 +15,7 @@
 				<RowDefinition Height="Auto"/>
 				<RowDefinition/>
 			</Grid.RowDefinitions>
-			<Button Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5" Width="16" Height="16"/>
+			<Button Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5" Width="16" Height="16" Command="{Binding DeleteEvent, Mode=OneWay}"/>
 			<TextBlock TextWrapping="Wrap" Text="{Binding Time, Mode=OneWay}" Margin="5,5,25.546,5" VerticalAlignment="Top"/>
 			<TextBlock TextWrapping="Wrap" Text="{Binding GroupName}" Margin="5" Grid.Row="1" FontSize="16"/>
 		</Grid>

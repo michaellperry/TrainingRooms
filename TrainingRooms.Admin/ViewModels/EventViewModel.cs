@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using TrainingRooms.Model;
+using UpdateControls.XAML;
 
 namespace TrainingRooms.Admin.ViewModels
 {
@@ -28,6 +30,21 @@ namespace TrainingRooms.Admin.ViewModels
             get
             {
                 return _event.Group.Value.Name.Value;
+            }
+        }
+
+        public ICommand DeleteEvent
+        {
+            get
+            {
+                return MakeCommand
+                    .Do(delegate
+                    {
+                        _event.Community.Perform(async delegate
+                        {
+                            await _event.Delete();
+                        });
+                    });
             }
         }
     }

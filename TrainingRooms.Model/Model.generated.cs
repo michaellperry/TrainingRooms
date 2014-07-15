@@ -2176,7 +2176,8 @@ namespace TrainingRooms.Model
 			    _cacheQueryEvents = new Query()
     				.JoinSuccessors(EventSchedule.GetRoleSchedule(), Condition.WhereIsEmpty(EventSchedule.GetQueryIsCurrent())
 				)
-		    		.JoinPredecessors(EventSchedule.GetRoleEvent())
+    				.JoinPredecessors(EventSchedule.GetRoleEvent(), Condition.WhereIsEmpty(Event.GetQueryIsDeleted())
+				)
                 ;
             }
             return _cacheQueryEvents;
