@@ -58,10 +58,10 @@ namespace TrainingRooms.Tests
 
             var room = await _improving.NewRoomAsync();
             var group = await _improving.NewGroup();
-            var upcommingEvent = await room.NewEvent(
+            var upcommingEvent = await room.NewEventAsync(
                 group, new DateTime(2014, 7, 9, 18, 0, 0));
 
-            var today = await room.ScheduleFor(new DateTime(2014, 7, 9));
+            var today = await room.ScheduleForAsync(new DateTime(2014, 7, 9));
 
             Assert.AreSame(upcommingEvent, today.Events.Single());
         }

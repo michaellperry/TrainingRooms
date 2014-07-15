@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using TrainingRooms.Model;
+using UpdateControls.XAML;
 
 namespace TrainingRooms.Admin.ViewModels
 {
@@ -21,16 +23,44 @@ namespace TrainingRooms.Admin.ViewModels
             set { _schedule.Room.Name = value; }
         }
 
+        public ICommand DeleteRoom
+        {
+            get
+            {
+                return MakeCommand
+                    .Do(delegate
+                    {
+                        _schedule.Community.Perform(async delegate
+                        {
+                            await _schedule.Room.DeleteAsync();
+                        });
+                    });
+            }
+        }
+
         public IEnumerable<EventViewModel> Events
         {
             get
             {
                 return
                     from @event in _schedule.Events
-                    let start = @event.Start
-                    where start.Candidates.Any()
-                    orderby start.Value
+                    orderby @event.Start.Value
                     select new EventViewModel(@event);
+            }
+        }
+
+        public ICommand NewEvent
+        {
+            get
+            {
+                return MakeCommand
+                    .Do(delegate
+                    {
+                        _schedule.Community.Perform(async delegate
+                        {
+                            await _schedule.NewEventAsync();
+                        });
+                    });
             }
         }
     }

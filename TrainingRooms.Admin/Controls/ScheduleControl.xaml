@@ -20,10 +20,10 @@
 			<ColumnDefinition/>
 		</Grid.ColumnDefinitions>
 		<TextBox TextWrapping="Wrap" Text="{Binding RoomName}" VerticalAlignment="Top" Margin="5,5,22,0"/>
-		<Button Content="X" HorizontalAlignment="Left" Height="17.96" Margin="110,5,0,0" VerticalAlignment="Top" Width="12"/>
+		<Button Content="X" HorizontalAlignment="Left" Height="17.96" Margin="110,5,0,0" VerticalAlignment="Top" Width="12" Command="{Binding DeleteRoom, Mode=OneWay}"/>
 		<StackPanel Grid.Column="1" Orientation="Horizontal">
 			<ItemsControl ItemsPanel="{DynamicResource EventItemsControlPanelTemplate}" ItemTemplate="{DynamicResource EventViewModelTemplate}" ItemsSource="{Binding Events}"></ItemsControl>
-			<Button Content="New Event" HorizontalAlignment="Left" Height="25" VerticalAlignment="Center" Width="85" Margin="5"/>
+			<Button Content="New Event" HorizontalAlignment="Left" Height="25" VerticalAlignment="Center" Width="85" Margin="5" Command="{Binding NewEvent, Mode=OneWay}"/>
 		</StackPanel>
 	</Grid>
 </UserControl>
