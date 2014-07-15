@@ -66,7 +66,7 @@ namespace TrainingRooms.Admin.DataSources
             await NewSchedule(
                 "Training Room A",
                 await NewEvent(
-                    "Srum Immersion",
+                    "Scrum Immersion",
                     new DateTime(2014, 7, 14, 9, 0, 0),
                     new DateTime(2014, 7, 14, 17, 0, 0)),
                 await NewEvent(
@@ -139,9 +139,6 @@ namespace TrainingRooms.Admin.DataSources
             var group = await _community.AddFactAsync(new Group(_venue));
             group.Name = groupName;
             @event.Group = group;
-            var room = await _community.AddFactAsync(new Room(_venue));
-            var schedule = await _community.AddFactAsync(new Schedule(room, day));
-            await _community.AddFactAsync(new EventSchedule(@event, schedule, Enumerable.Empty<EventSchedule>()));
             return @event;
         }
     }

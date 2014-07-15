@@ -17,5 +17,19 @@ namespace TrainingRooms.Admin.Jobs
             _rooms = new List<Room>(rooms);
             _date = date;
         }
+
+        public async Task<Schedule[]> CreateSchedulesAsync()
+        {
+            if (_rooms.Any())
+            {
+                var community = _rooms.First().Community;
+                var day = await community.AddFactAsync(new Day(_date));
+                var schedules = await Task.WhenAll(_rooms
+                    .Select(r => community.AddFactAsync(new Schedule(r, day))));
+                return schedules;
+            }
+            else
+                return new Schedule[0];
+        }
     }
 }
