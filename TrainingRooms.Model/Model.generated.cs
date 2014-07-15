@@ -12,6 +12,9 @@ using System.IO;
 digraph "TrainingRooms.Model"
 {
     rankdir=BT
+    VenueToken__venue -> VenueToken
+    VenueToken__venue -> VenueToken__venue [label="  *"]
+    VenueToken__venue -> Venue
     Room -> Venue
     Room__name -> Room
     Room__name -> Room__name [label="  *"]
@@ -434,6 +437,338 @@ namespace TrainingRooms.Model
         {
             get { return _groups; }
         }
+
+        // Mutable property access
+
+    }
+    
+    public partial class VenueToken : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				VenueToken newFact = new VenueToken(memento);
+
+				// Create a memory stream from the memento data.
+				using (MemoryStream data = new MemoryStream(memento.Data))
+				{
+					using (BinaryReader output = new BinaryReader(data))
+					{
+						newFact._identifier = (string)_fieldSerializerByType[typeof(string)].ReadData(output);
+					}
+				}
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				VenueToken fact = (VenueToken)obj;
+				_fieldSerializerByType[typeof(string)].WriteData(output, fact._identifier);
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return VenueToken.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return VenueToken.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"TrainingRooms.Model.VenueToken", 8);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static VenueToken GetUnloadedInstance()
+        {
+            return new VenueToken((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static VenueToken GetNullInstance()
+        {
+            return new VenueToken((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<VenueToken> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (VenueToken)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+
+        // Queries
+        private static Query _cacheQueryVenue;
+
+        public static Query GetQueryVenue()
+		{
+            if (_cacheQueryVenue == null)
+            {
+			    _cacheQueryVenue = new Query()
+    				.JoinSuccessors(VenueToken__venue.GetRoleVenueToken(), Condition.WhereIsEmpty(VenueToken__venue.GetQueryIsCurrent())
+				)
+                ;
+            }
+            return _cacheQueryVenue;
+		}
+
+        // Predicates
+
+        // Predecessors
+
+        // Fields
+        private string _identifier;
+
+        // Results
+        private Result<VenueToken__venue> _venue;
+
+        // Business constructor
+        public VenueToken(
+            string identifier
+            )
+        {
+            InitializeResults();
+            _identifier = identifier;
+        }
+
+        // Hydration constructor
+        private VenueToken(FactMemento memento)
+        {
+            InitializeResults();
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+            _venue = new Result<VenueToken__venue>(this, GetQueryVenue(), VenueToken__venue.GetUnloadedInstance, VenueToken__venue.GetNullInstance);
+        }
+
+        // Predecessor access
+
+        // Field access
+        public string Identifier
+        {
+            get { return _identifier; }
+        }
+
+        // Query result access
+
+        // Mutable property access
+
+        public TransientDisputable<VenueToken__venue, Venue> Venue
+        {
+            get { return _venue.AsTransientDisputable(fact => (Venue)fact.Value); }
+			set
+			{
+				Community.Perform(async delegate()
+				{
+					var current = (await _venue.EnsureAsync()).ToList();
+					if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
+					{
+						await Community.AddFactAsync(new VenueToken__venue(this, _venue, value.Value));
+					}
+				});
+			}
+        }
+    }
+    
+    public partial class VenueToken__venue : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				VenueToken__venue newFact = new VenueToken__venue(memento);
+
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				VenueToken__venue fact = (VenueToken__venue)obj;
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return VenueToken__venue.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return VenueToken__venue.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"TrainingRooms.Model.VenueToken__venue", 3625528);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static VenueToken__venue GetUnloadedInstance()
+        {
+            return new VenueToken__venue((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static VenueToken__venue GetNullInstance()
+        {
+            return new VenueToken__venue((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<VenueToken__venue> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (VenueToken__venue)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+        private static Role _cacheRoleVenueToken;
+        public static Role GetRoleVenueToken()
+        {
+            if (_cacheRoleVenueToken == null)
+            {
+                _cacheRoleVenueToken = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "venueToken",
+			        VenueToken._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleVenueToken;
+        }
+        private static Role _cacheRolePrior;
+        public static Role GetRolePrior()
+        {
+            if (_cacheRolePrior == null)
+            {
+                _cacheRolePrior = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "prior",
+			        VenueToken__venue._correspondenceFactType,
+			        false));
+            }
+            return _cacheRolePrior;
+        }
+        private static Role _cacheRoleValue;
+        public static Role GetRoleValue()
+        {
+            if (_cacheRoleValue == null)
+            {
+                _cacheRoleValue = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "value",
+			        Venue._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleValue;
+        }
+
+        // Queries
+        private static Query _cacheQueryIsCurrent;
+
+        public static Query GetQueryIsCurrent()
+		{
+            if (_cacheQueryIsCurrent == null)
+            {
+			    _cacheQueryIsCurrent = new Query()
+		    		.JoinSuccessors(VenueToken__venue.GetRolePrior())
+                ;
+            }
+            return _cacheQueryIsCurrent;
+		}
+
+        // Predicates
+        public static Condition IsCurrent = Condition.WhereIsEmpty(GetQueryIsCurrent());
+
+        // Predecessors
+        private PredecessorObj<VenueToken> _venueToken;
+        private PredecessorList<VenueToken__venue> _prior;
+        private PredecessorObj<Venue> _value;
+
+        // Fields
+
+        // Results
+
+        // Business constructor
+        public VenueToken__venue(
+            VenueToken @venueToken
+            ,IEnumerable<VenueToken__venue> @prior
+            ,Venue @value
+            )
+        {
+            InitializeResults();
+            _venueToken = new PredecessorObj<VenueToken>(this, GetRoleVenueToken(), @venueToken);
+            _prior = new PredecessorList<VenueToken__venue>(this, GetRolePrior(), @prior);
+            _value = new PredecessorObj<Venue>(this, GetRoleValue(), @value);
+        }
+
+        // Hydration constructor
+        private VenueToken__venue(FactMemento memento)
+        {
+            InitializeResults();
+            _venueToken = new PredecessorObj<VenueToken>(this, GetRoleVenueToken(), memento, VenueToken.GetUnloadedInstance, VenueToken.GetNullInstance);
+            _prior = new PredecessorList<VenueToken__venue>(this, GetRolePrior(), memento, VenueToken__venue.GetUnloadedInstance, VenueToken__venue.GetNullInstance);
+            _value = new PredecessorObj<Venue>(this, GetRoleValue(), memento, Venue.GetUnloadedInstance, Venue.GetNullInstance);
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+        }
+
+        // Predecessor access
+        public VenueToken VenueToken
+        {
+            get { return IsNull ? VenueToken.GetNullInstance() : _venueToken.Fact; }
+        }
+        public PredecessorList<VenueToken__venue> Prior
+        {
+            get { return _prior; }
+        }
+        public Venue Value
+        {
+            get { return IsNull ? Venue.GetNullInstance() : _value.Fact; }
+        }
+
+        // Field access
+
+        // Query result access
 
         // Mutable property access
 
@@ -3010,6 +3345,20 @@ namespace TrainingRooms.Model
 			community.AddQuery(
 				Venue._correspondenceFactType,
 				Venue.GetQueryGroups().QueryDefinition);
+			community.AddType(
+				VenueToken._correspondenceFactType,
+				new VenueToken.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { VenueToken._correspondenceFactType }));
+			community.AddQuery(
+				VenueToken._correspondenceFactType,
+				VenueToken.GetQueryVenue().QueryDefinition);
+			community.AddType(
+				VenueToken__venue._correspondenceFactType,
+				new VenueToken__venue.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { VenueToken__venue._correspondenceFactType }));
+			community.AddQuery(
+				VenueToken__venue._correspondenceFactType,
+				VenueToken__venue.GetQueryIsCurrent().QueryDefinition);
 			community.AddType(
 				Day._correspondenceFactType,
 				new Day.CorrespondenceFactFactory(fieldSerializerByType),

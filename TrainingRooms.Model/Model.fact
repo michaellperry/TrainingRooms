@@ -26,6 +26,14 @@ query:
 	}
 }
 
+fact VenueToken {
+key:
+	string identifier;
+
+mutable:
+	Venue venue;
+}
+
 fact Day {
 key:
 	date when;

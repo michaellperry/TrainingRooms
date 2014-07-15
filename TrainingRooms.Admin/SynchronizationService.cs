@@ -22,6 +22,8 @@ namespace TrainingRooms.Admin
         private Community _community;
         private Independent<Installation> _installation = new Independent<Installation>(
             Installation.GetNullInstance());
+        private Independent<VenueToken> _venueToken = new Independent<VenueToken>(
+            VenueToken.GetNullInstance());
 
         public void Initialize()
         {
@@ -89,6 +91,24 @@ namespace TrainingRooms.Admin
             }
         }
 
+        public VenueToken VenueToken
+        {
+            get
+            {
+                lock (this)
+                {
+                    return _venueToken;
+                }
+            }
+            private set
+            {
+                lock (this)
+                {
+                    _venueToken.Value = value;
+                }
+            }
+        }
+
         private void CreateInstallation()
         {
 			_community.Perform(async delegate
@@ -100,6 +120,9 @@ namespace TrainingRooms.Admin
 					await _community.SetFactAsync(ThisInstallation, installation);
 				}
 				Installation = installation;
+
+                VenueToken = await _community.AddFactAsync(
+                    new VenueToken("{3721E178-9386-430C-ACF9-E8E058EE653D}"));
 			});
         }
 
@@ -109,6 +132,9 @@ namespace TrainingRooms.Admin
 			{
 				var individual = await _community.AddFactAsync(new Installation());
 				Installation = individual;
+
+                VenueToken = await _community.AddFactAsync(
+                    new VenueToken("{3721E178-9386-430C-ACF9-E8E058EE653D}"));
 			});
         }
     }

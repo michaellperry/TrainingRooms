@@ -2,6 +2,8 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using TrainingRooms.Admin.SelectionModels;
+using TrainingRooms.Model;
 using UpdateControls.XAML;
 
 namespace TrainingRooms.Admin.ViewModels
@@ -9,6 +11,7 @@ namespace TrainingRooms.Admin.ViewModels
     public class ViewModelLocator : ViewModelLocatorBase
     {
         private readonly SynchronizationService _synchronizationService;
+        private readonly DateSelectionModel _dateSelectionModel;
 
         public ViewModelLocator()
         {
@@ -17,6 +20,7 @@ namespace TrainingRooms.Admin.ViewModels
                 _synchronizationService.Initialize();
             else
                 _synchronizationService.InitializeDesignMode();
+            _dateSelectionModel = new DateSelectionModel();
         }
 
         public object Main
@@ -25,7 +29,9 @@ namespace TrainingRooms.Admin.ViewModels
             {
                 return ViewModel(() => new MainViewModel(
                     _synchronizationService.Community,
-                    _synchronizationService.Installation));
+                    _synchronizationService.Installation,
+                    _dateSelectionModel,
+                    _synchronizationService.VenueToken));
             }
         }
     }

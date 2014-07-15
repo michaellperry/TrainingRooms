@@ -88,6 +88,8 @@
     </Compile>
     <Compile Include="DataSources\DesignModeDataSource.cs" />
     <Compile Include="HTTPConfigurationProvider.cs" />
+    <Compile Include="Jobs\ScheduleCreationJob.cs" />
+    <Compile Include="SelectionModels\DateSelectionModel.cs" />
     <Compile Include="SynchronizationService.cs" />
     <Compile Include="ViewModels\EventViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
