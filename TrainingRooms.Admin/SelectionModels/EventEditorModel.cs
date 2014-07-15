@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UpdateControls.Fields;
+using TrainingRooms.Model;
 
 namespace TrainingRooms.Admin.SelectionModels
 {
@@ -22,6 +23,20 @@ namespace TrainingRooms.Admin.SelectionModels
         {
             get { return _endMinutes; }
             set { _endMinutes.Value = value; }
+        }
+
+        public void ToEvent(Event @event)
+        {
+            @event.StartMinutes = StartMinutes;
+            @event.EndMinutes = EndMinutes;
+        }
+
+        public static EventEditorModel FromEvent(Event @event)
+        {
+            EventEditorModel model = new EventEditorModel();
+            model.StartMinutes = @event.StartMinutes;
+            model.EndMinutes = @event.EndMinutes;
+            return model;
         }
     }
 }

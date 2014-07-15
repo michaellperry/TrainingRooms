@@ -17,6 +17,11 @@ namespace TrainingRooms.Admin.ViewModels
             _event = @event;
         }
 
+        internal Event Event
+        {
+            get { return _event; }
+        }
+
         public string Time
         {
             get

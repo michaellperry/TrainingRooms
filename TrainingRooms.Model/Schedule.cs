@@ -14,7 +14,7 @@ namespace TrainingRooms.Model
             await Community.AddFactAsync(new EventSchedule(
                 @event, this, Enumerable.Empty<EventSchedule>()));
             @event.StartMinutes = 9 * 60;
-            @event.StartMinutes = 17 * 60;
+            @event.EndMinutes = 17 * 60;
             return @event;
         }
     }

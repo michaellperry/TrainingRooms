@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:DataSources="clr-namespace:TrainingRooms.Admin.DataSources" 
              x:Class="TrainingRooms.Admin.Controls.EventCardControl" 
-             mc:Ignorable="d">
+             mc:Ignorable="d" MouseDoubleClick="UserControl_MouseDoubleClick">
 	<UserControl.Resources>
 		<DataSources:DesignModeDataSource x:Key="DesignModeDataSourceDataSource" d:IsDataSource="True"/>
 	</UserControl.Resources>

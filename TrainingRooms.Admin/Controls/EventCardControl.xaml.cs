@@ -12,6 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TrainingRooms.Admin.Dialogs;
+using TrainingRooms.Admin.SelectionModels;
+using TrainingRooms.Admin.ViewModels;
+using UpdateControls.XAML;
 
 namespace TrainingRooms.Admin.Controls
 {
@@ -23,6 +27,21 @@ namespace TrainingRooms.Admin.Controls
         public EventCardControl()
         {
             InitializeComponent();
+        }
+
+        private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var viewModel = ForView.Unwrap<EventViewModel>(DataContext);
+            if (viewModel != null)
+            {
+                EventEditorDialog editor = new EventEditorDialog();
+                EventEditorModel model = EventEditorModel.FromEvent(viewModel.Event);
+                editor.DataContext = new EventEditorViewModel(model);
+                if (editor.ShowDialog() ?? false)
+                {
+                    model.ToEvent(viewModel.Event);
+                }
+            }
         }
     }
 }
