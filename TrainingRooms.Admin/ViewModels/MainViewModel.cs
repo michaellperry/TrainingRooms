@@ -1,29 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using TrainingRooms.Admin.Jobs;
 using TrainingRooms.Admin.SelectionModels;
 using TrainingRooms.Model;
-using UpdateControls;
 using UpdateControls.Correspondence;
-using UpdateControls.Fields;
-using UpdateControls.XAML;
 
 namespace TrainingRooms.Admin.ViewModels
 {
-    public class MainViewModel : IUpdatable
+    public class MainViewModel
     {
         private readonly Community _community;
         private readonly Installation _installation;
         private readonly DateSelectionModel _dateSelectionModel;
         private readonly VenueToken _venueToken;
 
-        private Dependent<ScheduleCreationJob> _scheduleCreationJob;
-        private Task _lastTask = Task.FromResult(0);
-        private Independent<List<Schedule>> _schedules = new Independent<List<Schedule>>(
-            new List<Schedule>());
+        private AsyncJob<ScheduleCreator, Schedule[]> _createSchedules;
         
         public MainViewModel(
             Community community,
@@ -36,10 +28,13 @@ namespace TrainingRooms.Admin.ViewModels
             _venueToken = venueToken;
             _dateSelectionModel = dateSelectionModel;
 
-            _scheduleCreationJob = new Dependent<ScheduleCreationJob>(() =>
-                new ScheduleCreationJob(_venueToken.Venue.Value.Rooms, _dateSelectionModel.SelectedDate));
-            _scheduleCreationJob.Invalidated += () => UpdateScheduler.ScheduleUpdate(this);
-            ((IUpdatable)this).UpdateNow();
+            _createSchedules = new AsyncJob<ScheduleCreator, Schedule[]>(
+                new Schedule[0],
+                () => new ScheduleCreator(
+                    _venueToken.Venue.Value.Rooms,
+                    _dateSelectionModel.SelectedDate),
+                async (ScheduleCreator job) =>
+                    await job.CreateSchedulesAsync());
         }
 
         public DateTime SeletedDate
@@ -52,13 +47,11 @@ namespace TrainingRooms.Admin.ViewModels
         {
             get
             {
-                List<Schedule> schedules;
-                lock (this)
-                {
-                    schedules = _schedules.Value;
-                }
                 return
-                    from schedule in schedules
+                    from schedule in _createSchedules.Output
+                    let name = schedule.Room.Name
+                    where name.Candidates.Any()
+                    orderby name.Value
                     select new ScheduleViewModel(schedule);
             }
         }
@@ -75,22 +68,6 @@ namespace TrainingRooms.Admin.ViewModels
                 return _community.LastException == null
                     ? String.Empty
                     : _community.LastException.Message;
-            }
-        }
-
-        void IUpdatable.UpdateNow()
-        {
-            var job = _scheduleCreationJob.Value;
-            _lastTask = Execute(job);
-        }
-
-        private async Task Execute(ScheduleCreationJob job)
-        {
-            await _lastTask;
-            var schedules = await job.CreateSchedulesAsync();
-            lock (this)
-            {
-                _schedules.Value = schedules.ToList();
             }
         }
     }
