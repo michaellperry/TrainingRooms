@@ -8,7 +8,7 @@ namespace TrainingRooms.Model
 {
     public partial class Venue
     {
-        public async Task<Room> NewRoom()
+        public async Task<Room> NewRoomAsync()
         {
             return await Community.AddFactAsync(new Room(this));
         }

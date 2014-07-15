@@ -35,7 +35,7 @@ namespace TrainingRooms.Tests
         {
             await CreateVenueAsync();
 
-            var room = await _improving.NewRoom();
+            var room = await _improving.NewRoomAsync();
 
             Assert.AreSame(room, _improving.Rooms.Single());
         }
@@ -45,7 +45,7 @@ namespace TrainingRooms.Tests
         {
             await CreateVenueAsync();
 
-            var room = await _improving.NewRoom();
+            var room = await _improving.NewRoomAsync();
             room.Name = "A";
 
             Assert.AreEqual("A", room.Name.Value);
@@ -56,7 +56,7 @@ namespace TrainingRooms.Tests
         {
             await CreateVenueAsync();
 
-            var room = await _improving.NewRoom();
+            var room = await _improving.NewRoomAsync();
             var group = await _improving.NewGroup();
             var upcommingEvent = await room.NewEvent(
                 group, new DateTime(2014, 7, 9, 18, 0, 0));

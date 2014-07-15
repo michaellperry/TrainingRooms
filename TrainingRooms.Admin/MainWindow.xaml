@@ -32,12 +32,12 @@
 			<StackPanel VerticalAlignment="Top">
 				<ItemsControl ItemTemplate="{DynamicResource ScheduleViewModelTemplate}" ItemsSource="{Binding Schedules}" AlternationCount="2"></ItemsControl>
 				<Grid Margin="0,0,0,-42">
-					<Button Content="New Room" HorizontalAlignment="Left" Height="25" Margin="5" VerticalAlignment="Top" Width="85"/>
+					<Button Content="New Room" HorizontalAlignment="Left" Height="25" Margin="5" VerticalAlignment="Top" Width="85" Command="{Binding NewRoom, Mode=OneWay}"/>
 				</Grid>
 			</StackPanel>
 		</ScrollViewer>
-		<Button Content="&lt;" HorizontalAlignment="Left" Height="24" Margin="115,10,0,0" VerticalAlignment="Top" Width="13.36"/>
-		<Button Content="&gt;" HorizontalAlignment="Left" Height="24" Margin="133.36,10,0,0" VerticalAlignment="Top" Width="13.36"/>
+		<Button Content="&lt;" HorizontalAlignment="Left" Height="24" Margin="115,10,0,0" VerticalAlignment="Top" Width="13.36" Command="{Binding PriorDate, Mode=OneWay}"/>
+		<Button Content="&gt;" HorizontalAlignment="Left" Height="24" Margin="133.36,10,0,0" VerticalAlignment="Top" Width="13.36" Command="{Binding NextDate, Mode=OneWay}"/>
         
 	</Grid>
 </Window>
