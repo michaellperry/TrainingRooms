@@ -1,6 +1,9 @@
 digraph "TrainingRooms.Model"
 {
     rankdir=BT
+    VenueToken__venue -> VenueToken
+    VenueToken__venue -> VenueToken__venue [label="  *"]
+    VenueToken__venue -> Venue
     Room -> Venue
     Room__name -> Room
     Room__name -> Room__name [label="  *"]
