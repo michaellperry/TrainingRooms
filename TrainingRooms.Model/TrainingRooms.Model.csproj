@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Event.cs" />
+    <Compile Include="Group.cs" />
     <Compile Include="Model.generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

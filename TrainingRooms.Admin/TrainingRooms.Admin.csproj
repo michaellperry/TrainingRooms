@@ -92,14 +92,20 @@
     <Compile Include="Dialogs\EventEditorDialog.xaml.cs">
       <DependentUpon>EventEditorDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\GroupEditorDialog.xaml.cs">
+      <DependentUpon>GroupEditorDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HTTPConfigurationProvider.cs" />
     <Compile Include="Jobs\AsyncJob.cs" />
     <Compile Include="Jobs\ScheduleCreator.cs" />
     <Compile Include="SelectionModels\DateSelectionModel.cs" />
     <Compile Include="SelectionModels\EventEditorModel.cs" />
+    <Compile Include="SelectionModels\GroupEditorModel.cs" />
     <Compile Include="SynchronizationService.cs" />
     <Compile Include="ViewModels\EventEditorViewModel.cs" />
     <Compile Include="ViewModels\EventViewModel.cs" />
+    <Compile Include="ViewModels\GroupEditorViewModel.cs" />
+    <Compile Include="ViewModels\GroupHeaderViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ScheduleViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
@@ -112,6 +118,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\EventEditorDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\GroupEditorDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -164,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <DesignData Include="SampleData\EventEditorViewModelSampleData.xaml" />
+    <DesignData Include="SampleData\GroupEditorViewModelSampleData.xaml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -121,7 +121,7 @@ namespace TrainingRooms.Admin.DataSources
                 "Ruby Tuesday",
                 date,
                 19 * 60,
-                21 * 60));
+                21 * 60), _venue);
         }
 
         private async Task<Schedule> NewSchedule(string roomName, params Event[] events)

@@ -1,0 +1,16 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="TrainingRooms.Admin.Dialogs.GroupEditorDialog"
+        Title="Group" Height="300" Width="300">
+	<StackPanel Margin="5" d:DataContext="{d:DesignData /SampleData/GroupEditorViewModelSampleData.xaml}">
+		<TextBlock TextWrapping="Wrap" Text="Name:" Margin="5,5,5,0"/>
+		<TextBox Height="23" TextWrapping="Wrap" Text="{Binding Name}" Margin="5"/>
+		<TextBlock TextWrapping="Wrap" Text="Image URL:" Margin="5,5,5,0"/>
+		<TextBox Height="23" TextWrapping="Wrap" Margin="5" Text="{Binding ImageUrl}"/>
+		<StackPanel Orientation="Horizontal">
+			<Button Content="OK" Width="75" Margin="5" IsDefault="True" Click="Button_Click"/>
+			<Button Content="Cancel" Width="75" Margin="5" IsCancel="True"/>
+		</StackPanel>
+	</StackPanel>
+</Window>

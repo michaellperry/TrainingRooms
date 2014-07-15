@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using TrainingRooms.Admin.Dialogs;
+using TrainingRooms.Admin.SelectionModels;
 using TrainingRooms.Model;
 using UpdateControls.XAML;
 
@@ -45,7 +47,7 @@ namespace TrainingRooms.Admin.ViewModels
                 return
                     from @event in _schedule.Events
                     orderby @event.StartMinutes.Value
-                    select new EventViewModel(@event);
+                    select new EventViewModel(@event, _schedule.Room.Venue);
             }
         }
 
@@ -56,10 +58,17 @@ namespace TrainingRooms.Admin.ViewModels
                 return MakeCommand
                     .Do(delegate
                     {
-                        _schedule.Community.Perform(async delegate
+                        EventEditorDialog editor = new EventEditorDialog();
+                        EventEditorModel model = new EventEditorModel();
+                        editor.DataContext = ForView.Wrap(new EventEditorViewModel(model, _schedule.Room.Venue));
+                        if (editor.ShowDialog() ?? false)
                         {
-                            await _schedule.NewEventAsync();
-                        });
+                            _schedule.Community.Perform(async delegate
+                            {
+                                    var @event = await _schedule.NewEventAsync();
+                                    model.ToEvent(@event);
+                            });
+                        }
                     });
             }
         }

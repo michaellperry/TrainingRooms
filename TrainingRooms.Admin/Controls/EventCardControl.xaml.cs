@@ -33,15 +33,7 @@ namespace TrainingRooms.Admin.Controls
         {
             var viewModel = ForView.Unwrap<EventViewModel>(DataContext);
             if (viewModel != null)
-            {
-                EventEditorDialog editor = new EventEditorDialog();
-                EventEditorModel model = EventEditorModel.FromEvent(viewModel.Event);
-                editor.DataContext = new EventEditorViewModel(model);
-                if (editor.ShowDialog() ?? false)
-                {
-                    model.ToEvent(viewModel.Event);
-                }
-            }
+                viewModel.Edit();
         }
     }
 }
