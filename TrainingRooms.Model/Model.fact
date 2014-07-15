@@ -98,8 +98,8 @@ key:
 
 mutable:
 	Group group;
-	time start;
-	time end;
+	int startMinutes;
+	int endMinutes;
 
 query:
 	bool isDeleted {

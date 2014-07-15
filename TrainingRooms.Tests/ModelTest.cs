@@ -57,9 +57,9 @@ namespace TrainingRooms.Tests
             await CreateVenueAsync();
 
             var room = await _improving.NewRoomAsync();
-            var group = await _improving.NewGroup();
+            var group = await _improving.NewGroupAsync();
             var upcommingEvent = await room.NewEventAsync(
-                group, new DateTime(2014, 7, 9, 18, 0, 0));
+                group, new DateTime(2014, 7, 9), 18 * 60);
 
             var today = await room.ScheduleForAsync(new DateTime(2014, 7, 9));
 

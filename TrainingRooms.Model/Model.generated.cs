@@ -30,10 +30,10 @@ digraph "TrainingRooms.Model"
     Event__group -> Event
     Event__group -> Event__group [label="  *"]
     Event__group -> Group
-    Event__start -> Event
-    Event__start -> Event__start [label="  *"]
-    Event__end -> Event
-    Event__end -> Event__end [label="  *"]
+    Event__startMinutes -> Event
+    Event__startMinutes -> Event__startMinutes [label="  *"]
+    Event__endMinutes -> Event
+    Event__endMinutes -> Event__endMinutes [label="  *"]
     EventSchedule -> Event
     EventSchedule -> Schedule
     EventSchedule -> EventSchedule [label="  *"]
@@ -2331,31 +2331,31 @@ namespace TrainingRooms.Model
             }
             return _cacheQueryGroup;
 		}
-        private static Query _cacheQueryStart;
+        private static Query _cacheQueryStartMinutes;
 
-        public static Query GetQueryStart()
+        public static Query GetQueryStartMinutes()
 		{
-            if (_cacheQueryStart == null)
+            if (_cacheQueryStartMinutes == null)
             {
-			    _cacheQueryStart = new Query()
-    				.JoinSuccessors(Event__start.GetRoleEvent(), Condition.WhereIsEmpty(Event__start.GetQueryIsCurrent())
+			    _cacheQueryStartMinutes = new Query()
+    				.JoinSuccessors(Event__startMinutes.GetRoleEvent(), Condition.WhereIsEmpty(Event__startMinutes.GetQueryIsCurrent())
 				)
                 ;
             }
-            return _cacheQueryStart;
+            return _cacheQueryStartMinutes;
 		}
-        private static Query _cacheQueryEnd;
+        private static Query _cacheQueryEndMinutes;
 
-        public static Query GetQueryEnd()
+        public static Query GetQueryEndMinutes()
 		{
-            if (_cacheQueryEnd == null)
+            if (_cacheQueryEndMinutes == null)
             {
-			    _cacheQueryEnd = new Query()
-    				.JoinSuccessors(Event__end.GetRoleEvent(), Condition.WhereIsEmpty(Event__end.GetQueryIsCurrent())
+			    _cacheQueryEndMinutes = new Query()
+    				.JoinSuccessors(Event__endMinutes.GetRoleEvent(), Condition.WhereIsEmpty(Event__endMinutes.GetQueryIsCurrent())
 				)
                 ;
             }
-            return _cacheQueryEnd;
+            return _cacheQueryEndMinutes;
 		}
         private static Query _cacheQueryIsDeleted;
 
@@ -2395,8 +2395,8 @@ namespace TrainingRooms.Model
 
         // Results
         private Result<Event__group> _group;
-        private Result<Event__start> _start;
-        private Result<Event__end> _end;
+        private Result<Event__startMinutes> _startMinutes;
+        private Result<Event__endMinutes> _endMinutes;
         private Result<EventSchedule> _eventSchedules;
 
         // Business constructor
@@ -2417,8 +2417,8 @@ namespace TrainingRooms.Model
         private void InitializeResults()
         {
             _group = new Result<Event__group>(this, GetQueryGroup(), Event__group.GetUnloadedInstance, Event__group.GetNullInstance);
-            _start = new Result<Event__start>(this, GetQueryStart(), Event__start.GetUnloadedInstance, Event__start.GetNullInstance);
-            _end = new Result<Event__end>(this, GetQueryEnd(), Event__end.GetUnloadedInstance, Event__end.GetNullInstance);
+            _startMinutes = new Result<Event__startMinutes>(this, GetQueryStartMinutes(), Event__startMinutes.GetUnloadedInstance, Event__startMinutes.GetNullInstance);
+            _endMinutes = new Result<Event__endMinutes>(this, GetQueryEndMinutes(), Event__endMinutes.GetUnloadedInstance, Event__endMinutes.GetNullInstance);
             _eventSchedules = new Result<EventSchedule>(this, GetQueryEventSchedules(), EventSchedule.GetUnloadedInstance, EventSchedule.GetNullInstance);
         }
 
@@ -2435,32 +2435,32 @@ namespace TrainingRooms.Model
         }
 
         // Mutable property access
-        public TransientDisputable<Event__start, DateTime> Start
+        public TransientDisputable<Event__startMinutes, int> StartMinutes
         {
-            get { return _start.AsTransientDisputable(fact => fact.Value); }
+            get { return _startMinutes.AsTransientDisputable(fact => fact.Value); }
 			set
 			{
                 Community.Perform(async delegate()
                 {
-                    var current = (await _start.EnsureAsync()).ToList();
+                    var current = (await _startMinutes.EnsureAsync()).ToList();
                     if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
                     {
-                        await Community.AddFactAsync(new Event__start(this, _start, value.Value));
+                        await Community.AddFactAsync(new Event__startMinutes(this, _startMinutes, value.Value));
                     }
                 });
 			}
         }
-        public TransientDisputable<Event__end, DateTime> End
+        public TransientDisputable<Event__endMinutes, int> EndMinutes
         {
-            get { return _end.AsTransientDisputable(fact => fact.Value); }
+            get { return _endMinutes.AsTransientDisputable(fact => fact.Value); }
 			set
 			{
                 Community.Perform(async delegate()
                 {
-                    var current = (await _end.EnsureAsync()).ToList();
+                    var current = (await _endMinutes.EnsureAsync()).ToList();
                     if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
                     {
-                        await Community.AddFactAsync(new Event__end(this, _end, value.Value));
+                        await Community.AddFactAsync(new Event__endMinutes(this, _endMinutes, value.Value));
                     }
                 });
 			}
@@ -2664,7 +2664,7 @@ namespace TrainingRooms.Model
 
     }
     
-    public partial class Event__start : CorrespondenceFact
+    public partial class Event__startMinutes : CorrespondenceFact
     {
 		// Factory
 		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
@@ -2678,14 +2678,14 @@ namespace TrainingRooms.Model
 
 			public CorrespondenceFact CreateFact(FactMemento memento)
 			{
-				Event__start newFact = new Event__start(memento);
+				Event__startMinutes newFact = new Event__startMinutes(memento);
 
 				// Create a memory stream from the memento data.
 				using (MemoryStream data = new MemoryStream(memento.Data))
 				{
 					using (BinaryReader output = new BinaryReader(data))
 					{
-						newFact._value = (DateTime)_fieldSerializerByType[typeof(DateTime)].ReadData(output);
+						newFact._value = (int)_fieldSerializerByType[typeof(int)].ReadData(output);
 					}
 				}
 
@@ -2694,24 +2694,24 @@ namespace TrainingRooms.Model
 
 			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
 			{
-				Event__start fact = (Event__start)obj;
-				_fieldSerializerByType[typeof(DateTime)].WriteData(output, fact._value);
+				Event__startMinutes fact = (Event__startMinutes)obj;
+				_fieldSerializerByType[typeof(int)].WriteData(output, fact._value);
 			}
 
             public CorrespondenceFact GetUnloadedInstance()
             {
-                return Event__start.GetUnloadedInstance();
+                return Event__startMinutes.GetUnloadedInstance();
             }
 
             public CorrespondenceFact GetNullInstance()
             {
-                return Event__start.GetNullInstance();
+                return Event__startMinutes.GetNullInstance();
             }
 		}
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.Event__start", 1071414996);
+			"TrainingRooms.Model.Event__startMinutes", 1071414948);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -2719,21 +2719,21 @@ namespace TrainingRooms.Model
 		}
 
         // Null and unloaded instances
-        public static Event__start GetUnloadedInstance()
+        public static Event__startMinutes GetUnloadedInstance()
         {
-            return new Event__start((FactMemento)null) { IsLoaded = false };
+            return new Event__startMinutes((FactMemento)null) { IsLoaded = false };
         }
 
-        public static Event__start GetNullInstance()
+        public static Event__startMinutes GetNullInstance()
         {
-            return new Event__start((FactMemento)null) { IsNull = true };
+            return new Event__startMinutes((FactMemento)null) { IsNull = true };
         }
 
         // Ensure
-        public Task<Event__start> EnsureAsync()
+        public Task<Event__startMinutes> EnsureAsync()
         {
             if (_loadedTask != null)
-                return _loadedTask.ContinueWith(t => (Event__start)t.Result);
+                return _loadedTask.ContinueWith(t => (Event__startMinutes)t.Result);
             else
                 return Task.FromResult(this);
         }
@@ -2760,7 +2760,7 @@ namespace TrainingRooms.Model
                 _cacheRolePrior = new Role(new RoleMemento(
 			        _correspondenceFactType,
 			        "prior",
-			        Event__start._correspondenceFactType,
+			        Event__startMinutes._correspondenceFactType,
 			        false));
             }
             return _cacheRolePrior;
@@ -2774,7 +2774,7 @@ namespace TrainingRooms.Model
             if (_cacheQueryIsCurrent == null)
             {
 			    _cacheQueryIsCurrent = new Query()
-		    		.JoinSuccessors(Event__start.GetRolePrior())
+		    		.JoinSuccessors(Event__startMinutes.GetRolePrior())
                 ;
             }
             return _cacheQueryIsCurrent;
@@ -2785,32 +2785,32 @@ namespace TrainingRooms.Model
 
         // Predecessors
         private PredecessorObj<Event> _event;
-        private PredecessorList<Event__start> _prior;
+        private PredecessorList<Event__startMinutes> _prior;
 
         // Fields
-        private DateTime _value;
+        private int _value;
 
         // Results
 
         // Business constructor
-        public Event__start(
+        public Event__startMinutes(
             Event @event
-            ,IEnumerable<Event__start> @prior
-            ,DateTime value
+            ,IEnumerable<Event__startMinutes> @prior
+            ,int value
             )
         {
             InitializeResults();
             _event = new PredecessorObj<Event>(this, GetRoleEvent(), @event);
-            _prior = new PredecessorList<Event__start>(this, GetRolePrior(), @prior);
+            _prior = new PredecessorList<Event__startMinutes>(this, GetRolePrior(), @prior);
             _value = value;
         }
 
         // Hydration constructor
-        private Event__start(FactMemento memento)
+        private Event__startMinutes(FactMemento memento)
         {
             InitializeResults();
             _event = new PredecessorObj<Event>(this, GetRoleEvent(), memento, Event.GetUnloadedInstance, Event.GetNullInstance);
-            _prior = new PredecessorList<Event__start>(this, GetRolePrior(), memento, Event__start.GetUnloadedInstance, Event__start.GetNullInstance);
+            _prior = new PredecessorList<Event__startMinutes>(this, GetRolePrior(), memento, Event__startMinutes.GetUnloadedInstance, Event__startMinutes.GetNullInstance);
         }
 
         // Result initializer
@@ -2823,13 +2823,13 @@ namespace TrainingRooms.Model
         {
             get { return IsNull ? Event.GetNullInstance() : _event.Fact; }
         }
-        public PredecessorList<Event__start> Prior
+        public PredecessorList<Event__startMinutes> Prior
         {
             get { return _prior; }
         }
 
         // Field access
-        public DateTime Value
+        public int Value
         {
             get { return _value; }
         }
@@ -2840,7 +2840,7 @@ namespace TrainingRooms.Model
 
     }
     
-    public partial class Event__end : CorrespondenceFact
+    public partial class Event__endMinutes : CorrespondenceFact
     {
 		// Factory
 		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
@@ -2854,14 +2854,14 @@ namespace TrainingRooms.Model
 
 			public CorrespondenceFact CreateFact(FactMemento memento)
 			{
-				Event__end newFact = new Event__end(memento);
+				Event__endMinutes newFact = new Event__endMinutes(memento);
 
 				// Create a memory stream from the memento data.
 				using (MemoryStream data = new MemoryStream(memento.Data))
 				{
 					using (BinaryReader output = new BinaryReader(data))
 					{
-						newFact._value = (DateTime)_fieldSerializerByType[typeof(DateTime)].ReadData(output);
+						newFact._value = (int)_fieldSerializerByType[typeof(int)].ReadData(output);
 					}
 				}
 
@@ -2870,24 +2870,24 @@ namespace TrainingRooms.Model
 
 			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
 			{
-				Event__end fact = (Event__end)obj;
-				_fieldSerializerByType[typeof(DateTime)].WriteData(output, fact._value);
+				Event__endMinutes fact = (Event__endMinutes)obj;
+				_fieldSerializerByType[typeof(int)].WriteData(output, fact._value);
 			}
 
             public CorrespondenceFact GetUnloadedInstance()
             {
-                return Event__end.GetUnloadedInstance();
+                return Event__endMinutes.GetUnloadedInstance();
             }
 
             public CorrespondenceFact GetNullInstance()
             {
-                return Event__end.GetNullInstance();
+                return Event__endMinutes.GetNullInstance();
             }
 		}
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.Event__end", 1071414996);
+			"TrainingRooms.Model.Event__endMinutes", 1071414948);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -2895,21 +2895,21 @@ namespace TrainingRooms.Model
 		}
 
         // Null and unloaded instances
-        public static Event__end GetUnloadedInstance()
+        public static Event__endMinutes GetUnloadedInstance()
         {
-            return new Event__end((FactMemento)null) { IsLoaded = false };
+            return new Event__endMinutes((FactMemento)null) { IsLoaded = false };
         }
 
-        public static Event__end GetNullInstance()
+        public static Event__endMinutes GetNullInstance()
         {
-            return new Event__end((FactMemento)null) { IsNull = true };
+            return new Event__endMinutes((FactMemento)null) { IsNull = true };
         }
 
         // Ensure
-        public Task<Event__end> EnsureAsync()
+        public Task<Event__endMinutes> EnsureAsync()
         {
             if (_loadedTask != null)
-                return _loadedTask.ContinueWith(t => (Event__end)t.Result);
+                return _loadedTask.ContinueWith(t => (Event__endMinutes)t.Result);
             else
                 return Task.FromResult(this);
         }
@@ -2936,7 +2936,7 @@ namespace TrainingRooms.Model
                 _cacheRolePrior = new Role(new RoleMemento(
 			        _correspondenceFactType,
 			        "prior",
-			        Event__end._correspondenceFactType,
+			        Event__endMinutes._correspondenceFactType,
 			        false));
             }
             return _cacheRolePrior;
@@ -2950,7 +2950,7 @@ namespace TrainingRooms.Model
             if (_cacheQueryIsCurrent == null)
             {
 			    _cacheQueryIsCurrent = new Query()
-		    		.JoinSuccessors(Event__end.GetRolePrior())
+		    		.JoinSuccessors(Event__endMinutes.GetRolePrior())
                 ;
             }
             return _cacheQueryIsCurrent;
@@ -2961,32 +2961,32 @@ namespace TrainingRooms.Model
 
         // Predecessors
         private PredecessorObj<Event> _event;
-        private PredecessorList<Event__end> _prior;
+        private PredecessorList<Event__endMinutes> _prior;
 
         // Fields
-        private DateTime _value;
+        private int _value;
 
         // Results
 
         // Business constructor
-        public Event__end(
+        public Event__endMinutes(
             Event @event
-            ,IEnumerable<Event__end> @prior
-            ,DateTime value
+            ,IEnumerable<Event__endMinutes> @prior
+            ,int value
             )
         {
             InitializeResults();
             _event = new PredecessorObj<Event>(this, GetRoleEvent(), @event);
-            _prior = new PredecessorList<Event__end>(this, GetRolePrior(), @prior);
+            _prior = new PredecessorList<Event__endMinutes>(this, GetRolePrior(), @prior);
             _value = value;
         }
 
         // Hydration constructor
-        private Event__end(FactMemento memento)
+        private Event__endMinutes(FactMemento memento)
         {
             InitializeResults();
             _event = new PredecessorObj<Event>(this, GetRoleEvent(), memento, Event.GetUnloadedInstance, Event.GetNullInstance);
-            _prior = new PredecessorList<Event__end>(this, GetRolePrior(), memento, Event__end.GetUnloadedInstance, Event__end.GetNullInstance);
+            _prior = new PredecessorList<Event__endMinutes>(this, GetRolePrior(), memento, Event__endMinutes.GetUnloadedInstance, Event__endMinutes.GetNullInstance);
         }
 
         // Result initializer
@@ -2999,13 +2999,13 @@ namespace TrainingRooms.Model
         {
             get { return IsNull ? Event.GetNullInstance() : _event.Fact; }
         }
-        public PredecessorList<Event__end> Prior
+        public PredecessorList<Event__endMinutes> Prior
         {
             get { return _prior; }
         }
 
         // Field access
-        public DateTime Value
+        public int Value
         {
             get { return _value; }
         }
@@ -3432,10 +3432,10 @@ namespace TrainingRooms.Model
 				Event.GetQueryGroup().QueryDefinition);
 			community.AddQuery(
 				Event._correspondenceFactType,
-				Event.GetQueryStart().QueryDefinition);
+				Event.GetQueryStartMinutes().QueryDefinition);
 			community.AddQuery(
 				Event._correspondenceFactType,
-				Event.GetQueryEnd().QueryDefinition);
+				Event.GetQueryEndMinutes().QueryDefinition);
 			community.AddQuery(
 				Event._correspondenceFactType,
 				Event.GetQueryIsDeleted().QueryDefinition);
@@ -3450,19 +3450,19 @@ namespace TrainingRooms.Model
 				Event__group._correspondenceFactType,
 				Event__group.GetQueryIsCurrent().QueryDefinition);
 			community.AddType(
-				Event__start._correspondenceFactType,
-				new Event__start.CorrespondenceFactFactory(fieldSerializerByType),
-				new FactMetadata(new List<CorrespondenceFactType> { Event__start._correspondenceFactType }));
+				Event__startMinutes._correspondenceFactType,
+				new Event__startMinutes.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { Event__startMinutes._correspondenceFactType }));
 			community.AddQuery(
-				Event__start._correspondenceFactType,
-				Event__start.GetQueryIsCurrent().QueryDefinition);
+				Event__startMinutes._correspondenceFactType,
+				Event__startMinutes.GetQueryIsCurrent().QueryDefinition);
 			community.AddType(
-				Event__end._correspondenceFactType,
-				new Event__end.CorrespondenceFactFactory(fieldSerializerByType),
-				new FactMetadata(new List<CorrespondenceFactType> { Event__end._correspondenceFactType }));
+				Event__endMinutes._correspondenceFactType,
+				new Event__endMinutes.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { Event__endMinutes._correspondenceFactType }));
 			community.AddQuery(
-				Event__end._correspondenceFactType,
-				Event__end.GetQueryIsCurrent().QueryDefinition);
+				Event__endMinutes._correspondenceFactType,
+				Event__endMinutes.GetQueryIsCurrent().QueryDefinition);
 			community.AddType(
 				EventSchedule._correspondenceFactType,
 				new EventSchedule.CorrespondenceFactFactory(fieldSerializerByType),

@@ -61,54 +61,67 @@ namespace TrainingRooms.Admin.DataSources
 
         private async Task<MainViewModel> NewMainViewModel()
         {
+            var date = new DateTime(2014, 7, 14);
+
             await NewSchedule(
                 "Training Room A",
                 await NewEvent(
                     "Scrum Immersion",
-                    new DateTime(2014, 7, 14, 9, 0, 0),
-                    new DateTime(2014, 7, 14, 17, 0, 0)),
+                    date,
+                    9 * 60,
+                    17 * 60),
                 await NewEvent(
                     "Ruby Tuesday",
-                    new DateTime(2014, 7, 14, 19, 0, 0),
-                    new DateTime(2014, 7, 14, 21, 0, 0)));
+                    date,
+                    19 * 60,
+                    21 * 60));
             await NewSchedule(
                 "Training Room B",
                 await NewEvent(
                     "C# SIG",
-                    new DateTime(2014, 7, 14, 19, 0, 0),
-                    new DateTime(2014, 7, 14, 21, 0, 0)));
+                    date,
+                    19 * 60,
+                    21 * 60));
             await NewSchedule(
                 "Training Room C");
             await NewSchedule(
                 "Training Room D",
                 await NewEvent(
                     "Learn.JS",
-                    new DateTime(2014, 7, 14, 19, 0, 0),
-                    new DateTime(2014, 7, 14, 21, 0, 0)));
+                    date,
+                    19 * 60,
+                    21 * 60));
             return new MainViewModel(_community, _installation, _dateSelectionModel, _venueToken);
         }
 
         private async Task<ScheduleViewModel> NewScheduleViewModel()
         {
+            var date = new DateTime(2014, 7, 14);
+
             return new ScheduleViewModel(await NewSchedule(
                 "Training Room A",
                 await NewEvent(
                     "Scrum Immersion",
-                    new DateTime(2014, 7, 14, 9, 0, 0),
-                    new DateTime(2014, 7, 14, 17, 0, 0)),
+                    date,
+                    9 * 60,
+                    17 * 60),
                 await NewEvent(
                     "Ruby Tuesday",
-                    new DateTime(2014, 7, 14, 19, 0, 0),
-                    new DateTime(2014, 7, 14, 21, 0, 0))
+                    date,
+                    19 * 60,
+                    21 * 60)
                 ));
         }
 
         private async Task<EventViewModel> NewEventViewModel()
         {
+            var date = new DateTime(2014, 7, 14);
+
             return new EventViewModel(await NewEvent(
                 "Ruby Tuesday",
-                new DateTime(2014, 7, 14, 19, 0, 0),
-                new DateTime(2014, 7, 14, 21, 0, 0)));
+                date,
+                19 * 60,
+                21 * 60));
         }
 
         private async Task<Schedule> NewSchedule(string roomName, params Event[] events)
@@ -128,12 +141,12 @@ namespace TrainingRooms.Admin.DataSources
             return schedule;
         }
 
-        private async Task<Event> NewEvent(string groupName, DateTime start, DateTime end)
+        private async Task<Event> NewEvent(string groupName, DateTime date, int startMinutes, int endMinutes)
         {
-            var day = await _community.AddFactAsync(new Day(start.Date));
+            var day = await _community.AddFactAsync(new Day(date.Date));
             var @event = await _community.AddFactAsync(new Event());
-            @event.Start = start;
-            @event.End = end;
+            @event.StartMinutes = startMinutes;
+            @event.EndMinutes = endMinutes;
             var group = await _community.AddFactAsync(new Group(_venue));
             group.Name = groupName;
             @event.Group = group;

@@ -44,7 +44,7 @@ namespace TrainingRooms.Admin.ViewModels
             {
                 return
                     from @event in _schedule.Events
-                    orderby @event.Start.Value
+                    orderby @event.StartMinutes.Value
                     select new EventViewModel(@event);
             }
         }

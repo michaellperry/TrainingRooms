@@ -14,12 +14,12 @@ namespace TrainingRooms.Model
             return await Community.AddFactAsync(new Schedule(this, day));
         }
 
-        public async Task<Event> NewEventAsync(Group group, DateTime time)
+        public async Task<Event> NewEventAsync(Group group, DateTime time, int startMinutes)
         {
             var schedule = await ScheduleForAsync(time.Date);
             var upcommingEvent = await Community.AddFactAsync(new Event());
             upcommingEvent.Group = group;
-            upcommingEvent.Start = time;
+            upcommingEvent.StartMinutes = startMinutes;
             await Community.AddFactAsync(new EventSchedule(
                 upcommingEvent, schedule, Enumerable.Empty<EventSchedule>()));
             return upcommingEvent;

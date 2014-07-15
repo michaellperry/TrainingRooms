@@ -88,11 +88,16 @@
       <DependentUpon>ScheduleControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataSources\DesignModeDataSource.cs" />
+    <Compile Include="Dialogs\EventEditorDialog.xaml.cs">
+      <DependentUpon>EventEditorDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HTTPConfigurationProvider.cs" />
     <Compile Include="Jobs\AsyncJob.cs" />
     <Compile Include="Jobs\ScheduleCreator.cs" />
     <Compile Include="SelectionModels\DateSelectionModel.cs" />
+    <Compile Include="SelectionModels\EventEditorModel.cs" />
     <Compile Include="SynchronizationService.cs" />
+    <Compile Include="ViewModels\EventEditorViewModel.cs" />
     <Compile Include="ViewModels\EventViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ScheduleViewModel.cs" />
@@ -102,6 +107,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ScheduleControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\EventEditorDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

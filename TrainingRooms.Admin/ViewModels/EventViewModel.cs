@@ -21,7 +21,9 @@ namespace TrainingRooms.Admin.ViewModels
         {
             get
             {
-                return String.Format(@"{0:t} - {1:t}", _event.Start.Value, _event.End.Value);
+                var start = DateTime.Today.AddMinutes(_event.StartMinutes.Value);
+                var end = DateTime.Today.AddMinutes(_event.EndMinutes.Value);
+                return String.Format(@"{0:t} - {1:t}", start, end);
             }
         }
 
