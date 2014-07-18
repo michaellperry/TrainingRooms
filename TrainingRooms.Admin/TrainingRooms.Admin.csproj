@@ -167,6 +167,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TrainingRooms.Logic\TrainingRooms.Logic.csproj">
+      <Project>{7c581448-b2c1-4553-9114-76ca74c8c9b1}</Project>
+      <Name>TrainingRooms.Logic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TrainingRooms.Model\TrainingRooms.Model.csproj">
       <Project>{620da39b-98ff-47c4-b17e-6a6fbae98d31}</Project>
       <Name>TrainingRooms.Model</Name>

@@ -1,29 +1,18 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Threading;
+using TrainingRooms.Logic;
 using TrainingRooms.Model;
 using UpdateControls.Correspondence;
 using UpdateControls.Correspondence.BinaryHTTPClient;
 using UpdateControls.Correspondence.Memory;
 using UpdateControls.Correspondence.SSCE;
-using UpdateControls.Fields;
 
 namespace TrainingRooms.Admin
 {
     public class SynchronizationService
     {
-        private const string ThisInstallation = "TrainingRooms.Admin.Installation.this";
-        private static readonly Regex Punctuation = new Regex(@"[{}\-]");
-
-        private Community _community;
-        private Independent<Installation> _installation = new Independent<Installation>(
-            Installation.GetNullInstance());
-        private Independent<VenueToken> _venueToken = new Independent<VenueToken>(
-            VenueToken.GetNullInstance());
+        private AdminDevice _device;
 
         public void Initialize()
         {
@@ -32,110 +21,54 @@ namespace TrainingRooms.Admin
             var http = new HTTPConfigurationProvider();
             var communication = new BinaryHTTPAsynchronousCommunicationStrategy(http);
 
-            _community = new Community(storage);
-            _community.AddAsynchronousCommunicationStrategy(communication);
-            _community.Register<CorrespondenceModel>();
-            _community.Subscribe(() => Installation);
+            _device = new AdminDevice(storage);
 
-            CreateInstallation();
+            _device.Community.AddAsynchronousCommunicationStrategy(communication);
+            _device.Subscribe();
+
+            _device.CreateInstallation();
 
             // Synchronize whenever the user has something to send.
-            _community.FactAdded += delegate
+            _device.Community.FactAdded += delegate
             {
-                _community.BeginSending();
+                _device.Community.BeginSending();
             };
 
             // Periodically resume if there is an error.
             DispatcherTimer synchronizeTimer = new DispatcherTimer();
             synchronizeTimer.Tick += delegate
             {
-                _community.BeginSending();
-                _community.BeginReceiving();
+                _device.Community.BeginSending();
+                _device.Community.BeginReceiving();
             };
             synchronizeTimer.Interval = TimeSpan.FromSeconds(60.0);
             synchronizeTimer.Start();
 
             // And synchronize on startup.
-            _community.BeginSending();
-            _community.BeginReceiving();
+            _device.Community.BeginSending();
+            _device.Community.BeginReceiving();
         }
 
         public void InitializeDesignMode()
         {
-            _community = new Community(new MemoryStorageStrategy());
-            _community.Register<CorrespondenceModel>();
+            _device = new AdminDevice(new MemoryStorageStrategy());
 
-            CreateInstallationDesignData();
+            _device.CreateInstallationDesignData();
         }
 
         public Community Community
         {
-            get { return _community; }
+            get { return _device.Community; }
         }
 
         public Installation Installation
         {
-            get
-            {
-                lock (this)
-                {
-                    return _installation;
-                }
-            }
-            private set
-            {
-                lock (this)
-                {
-                    _installation.Value = value;
-                }
-            }
+            get { return _device.Installation; }
         }
 
         public VenueToken VenueToken
         {
-            get
-            {
-                lock (this)
-                {
-                    return _venueToken;
-                }
-            }
-            private set
-            {
-                lock (this)
-                {
-                    _venueToken.Value = value;
-                }
-            }
-        }
-
-        private void CreateInstallation()
-        {
-			_community.Perform(async delegate
-			{
-				var installation = await _community.LoadFactAsync<Installation>(ThisInstallation);
-				if (installation == null)
-				{
-					installation = await _community.AddFactAsync(new Installation());
-					await _community.SetFactAsync(ThisInstallation, installation);
-				}
-				Installation = installation;
-
-                VenueToken = await _community.AddFactAsync(
-                    new VenueToken("{3721E178-9386-430C-ACF9-E8E058EE653D}"));
-			});
-        }
-
-        private void CreateInstallationDesignData()
-        {
-			_community.Perform(async delegate
-			{
-				var individual = await _community.AddFactAsync(new Installation());
-				Installation = individual;
-
-                VenueToken = await _community.AddFactAsync(
-                    new VenueToken("{3721E178-9386-430C-ACF9-E8E058EE653D}"));
-			});
+            get { return _device.VenueToken; }
         }
     }
 }
