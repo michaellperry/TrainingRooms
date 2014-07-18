@@ -1,10 +1,10 @@
 digraph "TrainingRooms.Model"
 {
     rankdir=BT
-    VenueToken__venue -> VenueToken
+    VenueToken__venue -> VenueToken [color="red"]
     VenueToken__venue -> VenueToken__venue [label="  *"]
     VenueToken__venue -> Venue
-    Room -> Venue
+    Room -> Venue [color="red"]
     Room__name -> Room
     Room__name -> Room__name [label="  *"]
     RoomDelete -> Room
@@ -19,10 +19,10 @@ digraph "TrainingRooms.Model"
     Event__group -> Event
     Event__group -> Event__group [label="  *"]
     Event__group -> Group
-    Event__start -> Event
-    Event__start -> Event__start [label="  *"]
-    Event__end -> Event
-    Event__end -> Event__end [label="  *"]
+    Event__startMinutes -> Event
+    Event__startMinutes -> Event__startMinutes [label="  *"]
+    Event__endMinutes -> Event
+    Event__endMinutes -> Event__endMinutes [label="  *"]
     EventSchedule -> Event
     EventSchedule -> Schedule
     EventSchedule -> EventSchedule [label="  *"]

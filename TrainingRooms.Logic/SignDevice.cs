@@ -1,14 +1,11 @@
 ﻿using UpdateControls.Correspondence;
 using UpdateControls.Correspondence.Strategy;
-using TrainingRooms.Logic;
-using TrainingRooms.Model;
-using System.Threading.Tasks;
 
 namespace TrainingRooms.Logic
 {
-    public class AdminDevice : Device
+    public class SignDevice : Device
     {
-        public AdminDevice(IStorageStrategy storage)
+        public SignDevice(IStorageStrategy storage)
             : base(storage)
         {
         }

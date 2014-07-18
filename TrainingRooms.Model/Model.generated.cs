@@ -12,10 +12,10 @@ using System.IO;
 digraph "TrainingRooms.Model"
 {
     rankdir=BT
-    VenueToken__venue -> VenueToken
+    VenueToken__venue -> VenueToken [color="red"]
     VenueToken__venue -> VenueToken__venue [label="  *"]
     VenueToken__venue -> Venue
-    Room -> Venue
+    Room -> Venue [color="red"]
     Room__name -> Room
     Room__name -> Room__name [label="  *"]
     RoomDelete -> Room
@@ -631,7 +631,7 @@ namespace TrainingRooms.Model
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.VenueToken__venue", 3625528);
+			"TrainingRooms.Model.VenueToken__venue", 3631004);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -668,7 +668,7 @@ namespace TrainingRooms.Model
 			        _correspondenceFactType,
 			        "venueToken",
 			        VenueToken._correspondenceFactType,
-			        false));
+			        true));
             }
             return _cacheRoleVenueToken;
         }
@@ -942,7 +942,7 @@ namespace TrainingRooms.Model
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.Room", -1516598966);
+			"TrainingRooms.Model.Room", -1516598962);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -979,7 +979,7 @@ namespace TrainingRooms.Model
 			        _correspondenceFactType,
 			        "venue",
 			        Venue._correspondenceFactType,
-			        false));
+			        true));
             }
             return _cacheRoleVenue;
         }
