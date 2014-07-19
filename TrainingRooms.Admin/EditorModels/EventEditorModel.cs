@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UpdateControls.Fields;
 using TrainingRooms.Model;
 
-namespace TrainingRooms.Admin.SelectionModels
+namespace TrainingRooms.Admin.EditorModels
 {
     public class EventEditorModel
     {

@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Input;
 using TrainingRooms.Admin.Dialogs;
-using TrainingRooms.Admin.SelectionModels;
+using TrainingRooms.Admin.EditorModels;
 using TrainingRooms.Model;
 using UpdateControls.XAML;
 

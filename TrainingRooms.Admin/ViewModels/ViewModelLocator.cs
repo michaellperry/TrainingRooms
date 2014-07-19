@@ -1,9 +1,4 @@
-using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows;
-using TrainingRooms.Admin.SelectionModels;
-using TrainingRooms.Model;
+using TrainingRooms.Logic.SelectionModels;
 using UpdateControls.XAML;
 
 namespace TrainingRooms.Admin.ViewModels
@@ -31,7 +26,8 @@ namespace TrainingRooms.Admin.ViewModels
                     _synchronizationService.Community,
                     _synchronizationService.Installation,
                     _dateSelectionModel,
-                    _synchronizationService.VenueToken));
+                    _synchronizationService.VenueToken,
+                    _synchronizationService.Device));
             }
         }
     }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using TrainingRooms.Admin.SelectionModels;
 using TrainingRooms.Admin.ViewModels;
+using TrainingRooms.Logic;
+using TrainingRooms.Logic.SelectionModels;
 using TrainingRooms.Model;
 using UpdateControls.Correspondence;
 using UpdateControls.Correspondence.Memory;
@@ -15,6 +16,7 @@ namespace TrainingRooms.Admin.DataSources
         private Installation _installation;
         private Venue _venue;
         private VenueToken _venueToken;
+        private AdminDevice _device;
 
         private DateSelectionModel _dateSelectionModel;
 
@@ -47,11 +49,12 @@ namespace TrainingRooms.Admin.DataSources
 
         private async Task Initialize()
         {
-            _community = new Community(new MemoryStorageStrategy());
-            _community.Register<CorrespondenceModel>();
-            _installation = await _community.AddFactAsync(new Installation());
+            _device = new AdminDevice(new MemoryStorageStrategy(), new DateSelectionModel());
+            _device.CreateInstallationDesignData();
+            _community = _device.Community;
+            _installation = _device.Installation;
             _venue = await _community.AddFactAsync(new Venue());
-            _venueToken = await _community.AddFactAsync(new VenueToken(""));
+            _venueToken = _device.VenueToken;
             _venueToken.Venue = _venue;
 
             _main = await NewMainViewModel();
@@ -91,7 +94,7 @@ namespace TrainingRooms.Admin.DataSources
                     date,
                     19 * 60,
                     21 * 60));
-            return new MainViewModel(_community, _installation, _dateSelectionModel, _venueToken);
+            return new MainViewModel(_community, _installation, _dateSelectionModel, _venueToken, _device);
         }
 
         private async Task<ScheduleViewModel> NewScheduleViewModel()

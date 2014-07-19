@@ -1,12 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TrainingRooms.Logic;
+using TrainingRooms.Logic.SelectionModels;
 using TrainingRooms.Model;
-using UpdateControls.Correspondence;
 using UpdateControls.Correspondence.Memory;
 
 namespace TrainingRooms.Tests
@@ -17,12 +15,21 @@ namespace TrainingRooms.Tests
         private AdminDevice _admin;
         private SignDevice _sign;
 
+        private Venue _venueAdmin;
+        private Venue _venueSign;
+
         [TestInitialize]
         public void Initialize()
         {
             var network = new MemoryCommunicationStrategy();
-            _admin = new AdminDevice(new MemoryStorageStrategy());
-            _sign = new SignDevice(new MemoryStorageStrategy());
+            _admin = new AdminDevice(new MemoryStorageStrategy(), new DateSelectionModel()
+                {
+                    SelectedDate = new DateTime(2014, 7, 18)
+                });
+            _sign = new SignDevice(new MemoryStorageStrategy(), new DateSelectionModel()
+                {
+                    SelectedDate = new DateTime(2014, 7, 18)
+                });
             _admin.Community.AddCommunicationStrategy(network);
             _sign.Community.AddCommunicationStrategy(network);
             _admin.Subscribe();
@@ -32,36 +39,71 @@ namespace TrainingRooms.Tests
         [TestMethod]
         public async Task SignCanSeeRooms()
         {
+            await InitializeVenuesAsync();
+
+            await CreateRoomAsync(_venueAdmin, "A");
+            await SynchronizeAsync();
+            AssertHasRoom(_venueSign, "A");
+        }
+
+        [TestMethod]
+        public async Task SignCanSeeEventsInSelectedRoom()
+        {
+            await InitializeVenuesAsync();
+
+            Room roomAdmin = await CreateRoomAsync(_venueAdmin, "A");
+            await CreateRoomAsync(_venueAdmin, "B");
+            var scheduleAdmin = await roomAdmin.ScheduleForAsync(new DateTime(2014, 7, 18));
+            var @event = await scheduleAdmin.NewEventAsync();
+            await SynchronizeAsync();
+
+            _sign.SelectedRoom = _venueSign.Rooms.Where(r => r.Name == "A").Single();
+            await SynchronizeAsync();
+            var scheduleSign = await _venueSign.Rooms.Where(r => r.Name == "A").Single()
+                .ScheduleForAsync(new DateTime(2014, 7, 18));
+            Assert.AreEqual(1, scheduleSign.Events.Count());
+        }
+
+        [TestMethod]
+        public async Task SignCannotSeeEventsInUnselectedRoom()
+        {
+            await InitializeVenuesAsync();
+
+            Room roomAdmin = await CreateRoomAsync(_venueAdmin, "A");
+            await CreateRoomAsync(_venueAdmin, "B");
+            var scheduleAdmin = await roomAdmin.ScheduleForAsync(new DateTime(2014, 7, 18));
+            var @event = await scheduleAdmin.NewEventAsync();
+            await SynchronizeAsync();
+
+            _sign.SelectedRoom = _venueSign.Rooms.Where(r => r.Name == "B").Single();
+            await SynchronizeAsync();
+            var scheduleSign = await _venueSign.Rooms.Where(r => r.Name == "A").Single()
+                .ScheduleForAsync(new DateTime(2014, 7, 18));
+            Assert.AreEqual(0, scheduleSign.Events.Count());
+        }
+
+        private async Task InitializeVenuesAsync()
+        {
             _admin.CreateInstallation();
             _sign.CreateInstallation();
 
-            Venue venueAdmin = await _admin.GetVenueAsync();
+            _venueAdmin = await _admin.GetVenueAsync();
             await SynchronizeAsync();
-            Venue venueSign = await _sign.GetVenueAsync();
-
-            Room roomA = await venueAdmin.NewRoomAsync();
-            roomA.Name = "A";
-
-            await SynchronizeAsync();
-
-            var names = venueSign.Rooms.Select(r => r.Name.Value).ToArray();
-            Assert.IsTrue(names.Contains("A"),
-                String.Format("No room found with the name A: [{0}]", FormatStringArray(names)));
+            _venueSign = await _sign.GetVenueAsync();
         }
 
-        private async Task CreateRoom(Device device, string name)
+        private async Task<Room> CreateRoomAsync(Venue venue, string name)
         {
-            Venue venue = await device.GetVenueAsync();
-            Room roomA = await venue.NewRoomAsync();
-            roomA.Name = name;
+            Room room = await venue.NewRoomAsync();
+            room.Name = name;
+            return room;
         }
 
-        private async Task AssertHasRoom(Device device, string name)
+        private void AssertHasRoom(Venue venue, string name)
         {
-            Venue venue = await device.GetVenueAsync();
-            var names = venue.Rooms.Select(room => room.Name.Value).ToArray();
+            var names = venue.Rooms.Select(r => r.Name.Value).ToArray();
             Assert.IsTrue(names.Contains(name),
-                String.Format("No room found with the name {0}: [{1}]", name, String.Join(", ", names)));
+                String.Format("No room found with the name {0}: [{1}]", name, FormatStringArray(names)));
         }
 
         private async Task SynchronizeAsync()

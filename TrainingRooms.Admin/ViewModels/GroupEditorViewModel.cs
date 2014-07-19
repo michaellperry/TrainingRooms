@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TrainingRooms.Admin.SelectionModels;
+using TrainingRooms.Admin.EditorModels;
 
 namespace TrainingRooms.Admin.ViewModels
 {

@@ -14,7 +14,7 @@ digraph "TrainingRooms.Model"
     Group__imageUrl -> Group
     Group__imageUrl -> Group__imageUrl [label="  *"]
     GroupDelete -> Group
-    Schedule -> Room
+    Schedule -> Room [color="red"]
     Schedule -> Day
     Event__group -> Event
     Event__group -> Event__group [label="  *"]
@@ -24,7 +24,7 @@ digraph "TrainingRooms.Model"
     Event__endMinutes -> Event
     Event__endMinutes -> Event__endMinutes [label="  *"]
     EventSchedule -> Event
-    EventSchedule -> Schedule
+    EventSchedule -> Schedule [color="red"]
     EventSchedule -> EventSchedule [label="  *"]
     EventDelete -> Event
 }

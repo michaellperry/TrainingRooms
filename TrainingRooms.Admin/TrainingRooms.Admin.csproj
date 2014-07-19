@@ -96,11 +96,8 @@
       <DependentUpon>GroupEditorDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="HTTPConfigurationProvider.cs" />
-    <Compile Include="Jobs\AsyncJob.cs" />
-    <Compile Include="Jobs\ScheduleCreator.cs" />
-    <Compile Include="SelectionModels\DateSelectionModel.cs" />
-    <Compile Include="SelectionModels\EventEditorModel.cs" />
-    <Compile Include="SelectionModels\GroupEditorModel.cs" />
+    <Compile Include="EditorModels\EventEditorModel.cs" />
+    <Compile Include="EditorModels\GroupEditorModel.cs" />
     <Compile Include="SynchronizationService.cs" />
     <Compile Include="ViewModels\EventEditorViewModel.cs" />
     <Compile Include="ViewModels\EventViewModel.cs" />

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Windows.Threading;
 using TrainingRooms.Logic;
+using TrainingRooms.Logic.SelectionModels;
 using TrainingRooms.Model;
 using UpdateControls.Correspondence;
 using UpdateControls.Correspondence.BinaryHTTPClient;
@@ -21,7 +22,7 @@ namespace TrainingRooms.Admin
             var http = new HTTPConfigurationProvider();
             var communication = new BinaryHTTPAsynchronousCommunicationStrategy(http);
 
-            _device = new AdminDevice(storage);
+            _device = new AdminDevice(storage, new DateSelectionModel());
 
             _device.Community.AddAsynchronousCommunicationStrategy(communication);
             _device.Subscribe();
@@ -51,9 +52,14 @@ namespace TrainingRooms.Admin
 
         public void InitializeDesignMode()
         {
-            _device = new AdminDevice(new MemoryStorageStrategy());
+            _device = new AdminDevice(new MemoryStorageStrategy(), new DateSelectionModel());
 
             _device.CreateInstallationDesignData();
+        }
+
+        public AdminDevice Device
+        {
+            get { return _device; }
         }
 
         public Community Community

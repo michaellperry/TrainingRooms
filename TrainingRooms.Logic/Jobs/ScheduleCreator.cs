@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TrainingRooms.Model;
 
-namespace TrainingRooms.Admin.Jobs
+namespace TrainingRooms.Logic.Jobs
 {
     public class ScheduleCreator
     {

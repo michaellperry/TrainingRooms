@@ -25,7 +25,7 @@ digraph "TrainingRooms.Model"
     Group__imageUrl -> Group
     Group__imageUrl -> Group__imageUrl [label="  *"]
     GroupDelete -> Group
-    Schedule -> Room
+    Schedule -> Room [color="red"]
     Schedule -> Day
     Event__group -> Event
     Event__group -> Event__group [label="  *"]
@@ -35,7 +35,7 @@ digraph "TrainingRooms.Model"
     Event__endMinutes -> Event
     Event__endMinutes -> Event__endMinutes [label="  *"]
     EventSchedule -> Event
-    EventSchedule -> Schedule
+    EventSchedule -> Schedule [color="red"]
     EventSchedule -> EventSchedule [label="  *"]
     EventDelete -> Event
 }
@@ -2111,7 +2111,7 @@ namespace TrainingRooms.Model
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.Schedule", 531036552);
+			"TrainingRooms.Model.Schedule", 531036700);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -2148,7 +2148,7 @@ namespace TrainingRooms.Model
 			        _correspondenceFactType,
 			        "room",
 			        Room._correspondenceFactType,
-			        false));
+			        true));
             }
             return _cacheRoleRoom;
         }
@@ -3054,7 +3054,7 @@ namespace TrainingRooms.Model
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.EventSchedule", 67871144);
+			"TrainingRooms.Model.EventSchedule", 67871292);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -3104,7 +3104,7 @@ namespace TrainingRooms.Model
 			        _correspondenceFactType,
 			        "schedule",
 			        Schedule._correspondenceFactType,
-			        false));
+			        true));
             }
             return _cacheRoleSchedule;
         }

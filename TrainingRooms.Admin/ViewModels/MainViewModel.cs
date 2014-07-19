@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using TrainingRooms.Admin.Jobs;
-using TrainingRooms.Admin.SelectionModels;
+using TrainingRooms.Logic;
+using TrainingRooms.Logic.SelectionModels;
 using TrainingRooms.Model;
 using UpdateControls.Correspondence;
 using UpdateControls.XAML;
-using System.Threading.Tasks;
 
 namespace TrainingRooms.Admin.ViewModels
 {
@@ -17,27 +17,20 @@ namespace TrainingRooms.Admin.ViewModels
         private readonly Installation _installation;
         private readonly DateSelectionModel _dateSelectionModel;
         private readonly VenueToken _venueToken;
-
-        private AsyncJob<ScheduleCreator, Schedule[]> _createSchedules;
+        private readonly AdminDevice _device;
         
         public MainViewModel(
             Community community,
             Installation installation,
             DateSelectionModel dateSelectionModel,
-            VenueToken venueToken)
+            VenueToken venueToken,
+            AdminDevice device)
         {
             _community = community;
             _installation = installation;
             _venueToken = venueToken;
             _dateSelectionModel = dateSelectionModel;
-
-            _createSchedules = new AsyncJob<ScheduleCreator, Schedule[]>(
-                new Schedule[0],
-                () => new ScheduleCreator(
-                    _venueToken.Venue.Value.Rooms,
-                    _dateSelectionModel.SelectedDate),
-                async (ScheduleCreator job) =>
-                    await job.CreateSchedulesAsync());
+            _device = device;
         }
 
         public DateTime SeletedDate
@@ -75,7 +68,7 @@ namespace TrainingRooms.Admin.ViewModels
             get
             {
                 return
-                    from schedule in _createSchedules.Output
+                    from schedule in _device.Schedules
                     orderby schedule.Room.Name.Value
                     select new ScheduleViewModel(schedule);
             }

@@ -36,7 +36,10 @@
   <ItemGroup>
     <Compile Include="AdminDevice.cs" />
     <Compile Include="Device.cs" />
+    <Compile Include="Jobs\AsyncJob.cs" />
+    <Compile Include="Jobs\ScheduleCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelectionModels\DateSelectionModel.cs" />
     <Compile Include="SignDevice.cs" />
   </ItemGroup>
   <ItemGroup>

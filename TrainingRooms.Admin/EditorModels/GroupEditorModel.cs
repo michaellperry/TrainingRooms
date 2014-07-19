@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TrainingRooms.Model;
 using UpdateControls.Fields;
 
-namespace TrainingRooms.Admin.SelectionModels
+namespace TrainingRooms.Admin.EditorModels
 {
     public class GroupEditorModel
     {

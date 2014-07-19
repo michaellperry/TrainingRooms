@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UpdateControls.Fields;
 
-namespace TrainingRooms.Admin.SelectionModels
+namespace TrainingRooms.Logic.SelectionModels
 {
     public class DateSelectionModel
     {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using UpdateControls;
 using UpdateControls.Fields;
 
-namespace TrainingRooms.Admin.Jobs
+namespace TrainingRooms.Logic.Jobs
 {
     public class AsyncJob<TInput, TOutput> : IUpdatable
     {

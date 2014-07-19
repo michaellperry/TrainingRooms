@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TrainingRooms.Logic.Jobs;
+using TrainingRooms.Logic.SelectionModels;
 using TrainingRooms.Model;
 using UpdateControls.Correspondence;
 using UpdateControls.Correspondence.Strategy;
@@ -19,10 +22,21 @@ namespace TrainingRooms.Logic
         private Independent<VenueToken> _venueToken = new Independent<VenueToken>(
             VenueToken.GetNullInstance());
 
-        public Device(IStorageStrategy storage)
+        private AsyncJob<ScheduleCreator, Schedule[]> _createSchedules;
+
+        public Device(IStorageStrategy storage, DateSelectionModel dateSelectionModel)
         {
             _community = new Community(storage);
             _community.Register<CorrespondenceModel>();
+
+            
+            _createSchedules = new AsyncJob<ScheduleCreator, Schedule[]>(
+                new Schedule[0],
+                () => new ScheduleCreator(
+                    VenueToken.Venue.Value.Rooms,
+                    dateSelectionModel.SelectedDate),
+                async (ScheduleCreator job) =>
+                    await job.CreateSchedulesAsync());
         }
 
         public Community Community
@@ -66,6 +80,11 @@ namespace TrainingRooms.Logic
             }
         }
 
+        public IEnumerable<Schedule> Schedules
+        {
+            get { return _createSchedules.Output; }
+        }
+
         public void CreateInstallation()
         {
             Community.Perform(async delegate
@@ -100,6 +119,7 @@ namespace TrainingRooms.Logic
             Community.Subscribe(() => Installation);
             Community.Subscribe(() => VenueToken);
             Community.Subscribe(() => VenueToken.Venue.Value);
+            Community.Subscribe(() => Schedules);
         }
 
         public async Task<Venue> GetVenueAsync()

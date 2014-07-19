@@ -80,7 +80,7 @@ key:
 
 fact Schedule {
 key:
-	Room room;
+	publish Room room;
 	Day day;
 
 query:
@@ -115,7 +115,7 @@ query:
 fact EventSchedule {
 key:
 	Event event;
-	Schedule schedule;
+	publish Schedule schedule;
 	EventSchedule* prior;
 
 query:
