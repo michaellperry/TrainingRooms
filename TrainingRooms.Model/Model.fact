@@ -97,7 +97,6 @@ key:
 	unique;
 
 mutable:
-	Group group;
 	int startMinutes;
 	int endMinutes;
 
@@ -109,6 +108,23 @@ query:
 	EventSchedule* eventSchedules {
 		EventSchedule es : es.event = this
 			where es.isCurrent
+	}
+
+	EventGroup* eventGroups {
+		EventGroup eg : eg.event = this
+			where eg.isCurrent
+	}
+}
+
+fact EventGroup {
+key:
+	Event event;
+	publish Group group;
+	EventGroup* prior;
+
+query:
+	bool isCurrent {
+		not exists EventGroup next : next.prior = this
 	}
 }
 

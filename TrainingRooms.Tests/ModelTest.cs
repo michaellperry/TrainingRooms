@@ -60,12 +60,12 @@ namespace TrainingRooms.Tests
             var group = await _improving.NewGroupAsync();
             var schedule = await room.ScheduleForAsync(new DateTime(2014, 7, 9));
             var @event = await schedule.NewEventAsync();
-            @event.Group = group;
+            await @event.SetGroup(group);
             @event.StartMinutes = 18 * 60;
             @event.EndMinutes = 21 * 60;
 
             Assert.AreSame(@event, schedule.Events.Single());
-            Assert.AreSame(group, @event.Group.Value);
+            Assert.AreSame(group, await @event.GetGroup());
             Assert.AreEqual(18 * 60, @event.StartMinutes.Value);
             Assert.AreEqual(21 * 60, @event.EndMinutes.Value);
         }

@@ -64,7 +64,7 @@ namespace TrainingRooms.Admin.ViewModels
                             _schedule.Community.Perform(async delegate
                             {
                                     var @event = await _schedule.NewEventAsync();
-                                    model.ToEvent(@event);
+                                    await model.ToEvent(@event);
                             });
                         }
                     });

@@ -33,19 +33,20 @@ namespace TrainingRooms.Admin.EditorModels
             set { _group.Value = value; }
         }
 
-        public void ToEvent(Event @event)
+        public async Task ToEvent(Event @event)
         {
             @event.StartMinutes = StartMinutes;
             @event.EndMinutes = EndMinutes;
-            @event.Group = Group;
+            await @event.SetGroup(Group);
         }
 
-        public static EventEditorModel FromEvent(Event @event)
+        public static async Task<EventEditorModel> FromEvent(Event @event)
         {
             EventEditorModel model = new EventEditorModel();
-            model.StartMinutes = @event.StartMinutes;
-            model.EndMinutes = @event.EndMinutes;
-            model.Group = @event.Group;
+            model.StartMinutes = await @event.StartMinutes.EnsureAsync();
+            model.EndMinutes = await @event.EndMinutes.EnsureAsync();
+            var group = await @event.GetGroup();
+            model.Group = group;
             return model;
         }
     }

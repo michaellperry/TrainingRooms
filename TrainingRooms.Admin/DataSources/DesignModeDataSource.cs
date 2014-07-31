@@ -152,7 +152,7 @@ namespace TrainingRooms.Admin.DataSources
             @event.EndMinutes = endMinutes;
             var group = await _community.AddFactAsync(new Group(_venue));
             group.Name = groupName;
-            @event.Group = group;
+            await @event.SetGroup(group);
             return @event;
         }
     }

@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TrainingRooms.Admin.Dialogs;
 using TrainingRooms.Admin.EditorModels;
@@ -42,7 +44,9 @@ namespace TrainingRooms.Admin.ViewModels
         {
             get
             {
-                return _event.Group.Value.Name.Value;
+                return _event.EventGroups
+                    .Select(eg => eg.Group.Name.Value)
+                    .FirstOrDefault();
             }
         }
 
@@ -63,13 +67,16 @@ namespace TrainingRooms.Admin.ViewModels
 
         public void Edit()
         {
-            EventEditorDialog editor = new EventEditorDialog();
-            EventEditorModel model = EventEditorModel.FromEvent(Event);
-            editor.DataContext = ForView.Wrap(new EventEditorViewModel(model, Venue));
-            if (editor.ShowDialog() ?? false)
+            this._event.Community.Perform(async delegate
             {
-                model.ToEvent(Event);
-            }
+                EventEditorDialog editor = new EventEditorDialog();
+                EventEditorModel model = await EventEditorModel.FromEvent(Event);
+                editor.DataContext = ForView.Wrap(new EventEditorViewModel(model, Venue));
+                if (editor.ShowDialog() ?? false)
+                {
+                    await model.ToEvent(Event);
+                }
+            });
         }
     }
 }
