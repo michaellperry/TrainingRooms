@@ -16,19 +16,16 @@ namespace TrainingRooms.Admin.ViewModels
         private readonly Community _community;
         private readonly Installation _installation;
         private readonly DateSelectionModel _dateSelectionModel;
-        private readonly VenueToken _venueToken;
         private readonly AdminDevice _device;
         
         public MainViewModel(
             Community community,
             Installation installation,
             DateSelectionModel dateSelectionModel,
-            VenueToken venueToken,
             AdminDevice device)
         {
             _community = community;
             _installation = installation;
-            _venueToken = venueToken;
             _dateSelectionModel = dateSelectionModel;
             _device = device;
         }
@@ -107,14 +104,7 @@ namespace TrainingRooms.Admin.ViewModels
 
         private async Task<Venue> GetVenueAsync()
         {
-            Venue venue = await _venueToken.Venue.EnsureAsync();
-            if (venue.IsNull)
-            {
-                venue = await _community.AddFactAsync(new Venue());
-                _venueToken.Venue = venue;
-            }
-
-            return venue;
+            return await _device.GetVenueAsync();
         }
     }
 }

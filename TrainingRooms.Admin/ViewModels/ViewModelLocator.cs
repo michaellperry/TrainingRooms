@@ -10,6 +10,8 @@ namespace TrainingRooms.Admin.ViewModels
 
         public ViewModelLocator()
         {
+            ForView.Initialize();
+
             _synchronizationService = new SynchronizationService();
             if (!DesignMode)
                 _synchronizationService.Initialize();
@@ -26,7 +28,6 @@ namespace TrainingRooms.Admin.ViewModels
                     _synchronizationService.Community,
                     _synchronizationService.Installation,
                     _dateSelectionModel,
-                    _synchronizationService.VenueToken,
                     _synchronizationService.Device));
             }
         }

@@ -94,7 +94,7 @@ namespace TrainingRooms.Admin.DataSources
                     date,
                     19 * 60,
                     21 * 60));
-            return new MainViewModel(_community, _installation, _dateSelectionModel, _venueToken, _device);
+            return new MainViewModel(_community, _installation, _dateSelectionModel, _device);
         }
 
         private async Task<ScheduleViewModel> NewScheduleViewModel()
