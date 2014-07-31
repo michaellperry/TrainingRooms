@@ -31,7 +31,7 @@
 		<ScrollViewer Margin="55,57,0,0" HorizontalScrollBarVisibility="Visible">
 			<StackPanel VerticalAlignment="Top">
 				<ItemsControl ItemTemplate="{DynamicResource ScheduleViewModelTemplate}" ItemsSource="{Binding Schedules}" AlternationCount="2"></ItemsControl>
-				<Grid Margin="0,0,0,-42">
+				<Grid>
 					<Button Content="New Room" HorizontalAlignment="Left" Height="25" Margin="5" VerticalAlignment="Top" Width="85" Command="{Binding NewRoom, Mode=OneWay}"/>
 				</Grid>
 			</StackPanel>

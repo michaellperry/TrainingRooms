@@ -13,6 +13,7 @@ namespace TrainingRooms.Admin
 {
     public class SynchronizationService
     {
+        private DateSelectionModel _dateSelectionModel = new DateSelectionModel();
         private AdminDevice _device;
 
         public void Initialize()
@@ -22,7 +23,7 @@ namespace TrainingRooms.Admin
             var http = new HTTPConfigurationProvider();
             var communication = new BinaryHTTPAsynchronousCommunicationStrategy(http);
 
-            _device = new AdminDevice(storage, new DateSelectionModel());
+            _device = new AdminDevice(storage, _dateSelectionModel);
 
             _device.Community.AddAsynchronousCommunicationStrategy(communication);
             _device.Subscribe();
@@ -55,6 +56,11 @@ namespace TrainingRooms.Admin
             _device = new AdminDevice(new MemoryStorageStrategy(), new DateSelectionModel());
 
             _device.CreateInstallationDesignData();
+        }
+
+        public DateSelectionModel DateSelectionModel
+        {
+            get { return _dateSelectionModel; }
         }
 
         public AdminDevice Device
