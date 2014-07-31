@@ -15,9 +15,11 @@ namespace TrainingRooms.Tests
     public class SubscriptionTest
     {
         private AdminDevice _admin;
+        private AdminDevice _otherAdmin;
         private SignDevice _sign;
 
         private Venue _venueAdmin;
+        private Venue _venueOtherAdmin;
         private Venue _venueSign;
 
         private static Queue<Action> _updates;
@@ -36,13 +38,19 @@ namespace TrainingRooms.Tests
                 {
                     SelectedDate = new DateTime(2014, 7, 18)
                 });
+            _otherAdmin = new AdminDevice(new MemoryStorageStrategy(), new DateSelectionModel()
+                {
+                    SelectedDate = new DateTime(2014, 7, 18)
+                });
             _sign = new SignDevice(new MemoryStorageStrategy(), new DateSelectionModel()
                 {
                     SelectedDate = new DateTime(2014, 7, 18)
                 });
             _admin.Community.AddCommunicationStrategy(network);
+            _otherAdmin.Community.AddCommunicationStrategy(network);
             _sign.Community.AddCommunicationStrategy(network);
             _admin.Subscribe();
+            _otherAdmin.Subscribe();
             _sign.Subscribe();
         }
 
@@ -92,13 +100,30 @@ namespace TrainingRooms.Tests
             Assert.AreEqual(0, scheduleSign.Events.Count());
         }
 
+        [TestMethod]
+        public async Task OtherAdminCanSeeGroups()
+        {
+            await InitializeVenuesAsync();
+
+            Group group = await _venueAdmin.NewGroupAsync();
+            group.Name = "Papers We Love, Dallas";
+
+            await SynchronizeAsync();
+
+            var groups = _venueOtherAdmin.Groups;
+            Assert.AreEqual(1, groups.Count());
+            Assert.AreEqual("Papers We Love, Dallas", groups.Single().Name.Value);
+        }
+
         private async Task InitializeVenuesAsync()
         {
             _admin.CreateInstallation();
+            _otherAdmin.CreateInstallation();
             _sign.CreateInstallation();
 
             _venueAdmin = await _admin.GetVenueAsync();
             await SynchronizeAsync();
+            _venueOtherAdmin = await _otherAdmin.GetVenueAsync();
             _venueSign = await _sign.GetVenueAsync();
         }
 
@@ -120,6 +145,7 @@ namespace TrainingRooms.Tests
         {
             while (
                 (await _admin.Community.SynchronizeAsync()) ||
+                (await _otherAdmin.Community.SynchronizeAsync()) ||
                 (await _sign.Community.SynchronizeAsync()) ||
                 ProcessUpdates()) ;
         }

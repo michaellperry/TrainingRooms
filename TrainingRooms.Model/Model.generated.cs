@@ -19,7 +19,7 @@ digraph "TrainingRooms.Model"
     Room__name -> Room
     Room__name -> Room__name [label="  *"]
     RoomDelete -> Room
-    Group -> Venue
+    Group -> Venue [color="red"]
     Group__name -> Group
     Group__name -> Group__name [label="  *"]
     Group__imageUrl -> Group
@@ -1428,7 +1428,7 @@ namespace TrainingRooms.Model
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.Group", -1516598966);
+			"TrainingRooms.Model.Group", -1516598962);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -1465,7 +1465,7 @@ namespace TrainingRooms.Model
 			        _correspondenceFactType,
 			        "venue",
 			        Venue._correspondenceFactType,
-			        false));
+			        true));
             }
             return _cacheRoleVenue;
         }

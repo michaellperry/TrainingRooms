@@ -61,7 +61,7 @@ key:
 fact Group {
 key:
 	unique;
-	Venue venue;
+	publish Venue venue;
 
 mutable:
 	string name;
