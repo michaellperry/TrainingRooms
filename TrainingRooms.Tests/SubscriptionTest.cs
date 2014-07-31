@@ -1,10 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TrainingRooms.Logic;
 using TrainingRooms.Logic.SelectionModels;
 using TrainingRooms.Model;
+using UpdateControls;
 using UpdateControls.Correspondence.Memory;
 
 namespace TrainingRooms.Tests
@@ -17,6 +19,14 @@ namespace TrainingRooms.Tests
 
         private Venue _venueAdmin;
         private Venue _venueSign;
+
+        private static Queue<Action> _updates;
+
+        static SubscriptionTest()
+        {
+            _updates = new Queue<Action>();
+            UpdateScheduler.Initialize(a => _updates.Enqueue(a));
+        }
 
         [TestInitialize]
         public void Initialize()
@@ -108,7 +118,23 @@ namespace TrainingRooms.Tests
 
         private async Task SynchronizeAsync()
         {
-            while ((await _admin.Community.SynchronizeAsync()) && (await _sign.Community.SynchronizeAsync())) ;
+            while (
+                (await _admin.Community.SynchronizeAsync()) ||
+                (await _sign.Community.SynchronizeAsync()) ||
+                ProcessUpdates()) ;
+        }
+
+        private static bool ProcessUpdates()
+        {
+            if (_updates.Any())
+            {
+                while (_updates.Any())
+                {
+                    _updates.Dequeue()();
+                }
+                return true;
+            }
+            return false;
         }
 
         private static string FormatStringArray(string[] names)
