@@ -10,7 +10,7 @@ using UpdateControls.Fields;
 
 namespace TrainingRooms.Logic
 {
-    public class Device
+    public abstract class Device
     {
         private const string ThisInstallation = "TrainingRooms.Admin.Installation.this";
         private const string TokenIdentifier = "{3721E178-9386-430C-ACF9-E8E058EE653D}";
@@ -22,21 +22,10 @@ namespace TrainingRooms.Logic
         private Independent<VenueToken> _venueToken = new Independent<VenueToken>(
             VenueToken.GetNullInstance());
 
-        private AsyncJob<ScheduleCreator, Schedule[]> _createSchedules;
-
         public Device(IStorageStrategy storage, DateSelectionModel dateSelectionModel)
         {
             _community = new Community(storage);
             _community.Register<CorrespondenceModel>();
-
-            
-            _createSchedules = new AsyncJob<ScheduleCreator, Schedule[]>(
-                new Schedule[0],
-                () => new ScheduleCreator(
-                    VenueToken.Venue.Value.Rooms,
-                    dateSelectionModel.SelectedDate),
-                async (ScheduleCreator job) =>
-                    await job.CreateSchedulesAsync());
         }
 
         public Community Community
@@ -80,9 +69,9 @@ namespace TrainingRooms.Logic
             }
         }
 
-        public IEnumerable<Schedule> Schedules
+        public abstract IEnumerable<Schedule> Schedules
         {
-            get { return _createSchedules.Output; }
+            get;
         }
 
         public void CreateInstallation()

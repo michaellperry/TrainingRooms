@@ -5,49 +5,99 @@ using UpdateControls.Fields;
 
 namespace TrainingRooms.Logic.Jobs
 {
-    public class AsyncJob<TInput, TOutput> : IUpdatable
+    public interface IAsyncJob<TOutput>
     {
-        private readonly Func<TInput> _trigger;
-        private readonly Func<TInput, Task<TOutput>> _calculation;
+        TOutput Output { get; }
+    }
 
-        private Dependent<TInput> _input;
-        private Task _lastTask = Task.FromResult(0);
-        private Independent<TOutput> _output;
-
-        public AsyncJob(TOutput initial, Func<TInput> trigger, Func<TInput, Task<TOutput>> calculation)
+    public static class Job
+    {
+        public static Trigger<TInput> Observe<TInput>(Func<TInput> trigger)
         {
-            _output = new Independent<TOutput>(initial);
-            _trigger = trigger;
-            _calculation = calculation;
-
-            _input = new Dependent<TInput>(trigger);
-            _input.Invalidated += () => UpdateScheduler.ScheduleUpdate(this);
-            UpdateNow();
+            return new Trigger<TInput>(trigger);
         }
 
-        public TOutput Output
+        public class Trigger<TInput>
         {
-            get
+            private readonly Func<TInput> _trigger;
+
+            public Trigger(Func<TInput> trigger)
             {
-                lock (this)
-                {
-                    return _output;
-                }
+                _trigger = trigger;
+            }
+
+            public Calculation<TInput, TOutput> ComputeAsync<TOutput>(Func<TInput, Task<TOutput>> calculation)
+            {
+                return new Calculation<TInput, TOutput>(_trigger, calculation);
             }
         }
 
-        public void UpdateNow()
+        public class Calculation<TInput, TOutput>
         {
-            _lastTask = Execute(_input);
+            private readonly Func<TInput> _trigger;
+            private readonly Func<TInput, Task<TOutput>> _calculation;
+
+            public Calculation(Func<TInput> trigger, Func<TInput, Task<TOutput>> calculation)
+            {
+                _trigger = trigger;
+                _calculation = calculation;
+            }
+
+            public IAsyncJob<TOutput> StartAtDefault()
+            {
+                return new AsyncJob<TInput, TOutput>(default(TOutput), _trigger, _calculation);
+            }
+
+            public IAsyncJob<TOutput> StartAt(TOutput initial)
+            {
+                return new AsyncJob<TInput, TOutput>(initial, _trigger, _calculation);
+            }
         }
 
-        private async Task Execute(TInput input)
+        class AsyncJob<TInput, TOutput> : IUpdatable, IAsyncJob<TOutput>
         {
-            await _lastTask;
-            var output = await _calculation(input);
-            lock (this)
+            private readonly Func<TInput> _trigger;
+            private readonly Func<TInput, Task<TOutput>> _calculation;
+
+            private Dependent<TInput> _input;
+            private Task _lastTask = Task.FromResult(0);
+            private Independent<TOutput> _output;
+
+            public AsyncJob(TOutput initial, Func<TInput> trigger, Func<TInput, Task<TOutput>> calculation)
             {
-                _output.Value = output;
+                _output = new Independent<TOutput>(initial);
+                _trigger = trigger;
+                _calculation = calculation;
+
+                _input = new Dependent<TInput>(trigger);
+                _input.Invalidated += () => UpdateScheduler.ScheduleUpdate(this);
+                UpdateNow();
+            }
+
+            public TOutput Output
+            {
+                get
+                {
+                    lock (this)
+                    {
+                        return _output;
+                    }
+                }
+            }
+
+            public void UpdateNow()
+            {
+                _lastTask = Execute(_input);
+            }
+
+            private async Task Execute(TInput input)
+            {
+                await _lastTask;
+                var output = await _calculation(input);
+                lock (this)
+                {
+                    _output.Value = output;
+                }
             }
         }
     }
