@@ -69,7 +69,7 @@ namespace TrainingRooms.FakeDevice
             CreateInstallationDesignData();
         }
 
-        public Device Device
+        public SignDevice Device
         {
             get { return _device; }
         }

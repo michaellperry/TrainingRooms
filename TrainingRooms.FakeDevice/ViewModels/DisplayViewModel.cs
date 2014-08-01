@@ -5,14 +5,22 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TrainingRooms.Model;
 
 namespace TrainingRooms.FakeDevice.ViewModels
 {
     public class DisplayViewModel : IScreen
     {
+        private readonly Room _room;
+
+        public DisplayViewModel(Room room)
+        {
+            _room = room;
+        }
+
         public string RoomName
         {
-            get { return "Training Room A"; }
+            get { return _room.Name; }
         }
 
         public string GroupName

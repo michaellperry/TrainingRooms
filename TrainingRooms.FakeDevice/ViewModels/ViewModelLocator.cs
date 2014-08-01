@@ -24,7 +24,7 @@ namespace TrainingRooms.FakeDevice.ViewModels
             get
             {
                 return ViewModel(() => new MainViewModel(
-                    _synchronizationService.Community,
+                    _synchronizationService.Device,
                     _synchronizationService.Installation));
             }
         }

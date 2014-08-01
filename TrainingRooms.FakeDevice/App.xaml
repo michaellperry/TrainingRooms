@@ -12,6 +12,9 @@
         <DataTemplate DataType="{x:Type vm:RoomSelectorViewModel}">
             <v:RoomSelectorControl/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DisplayViewModel}">
+            <v:DisplayControl/>
+        </DataTemplate>
         <s:ViewSelector x:Key="ViewSelector"/>
     </Application.Resources>
 </Application>
