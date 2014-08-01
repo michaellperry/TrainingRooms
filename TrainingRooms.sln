@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainingRooms.Admin", "Trai
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainingRooms.Logic", "TrainingRooms.Logic\TrainingRooms.Logic.csproj", "{7C581448-B2C1-4553-9114-76CA74C8C9B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainingRooms.FakeDevice", "TrainingRooms.FakeDevice\TrainingRooms.FakeDevice.csproj", "{D0517197-F4DD-42FF-9214-D8FD785F79C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{7C581448-B2C1-4553-9114-76CA74C8C9B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C581448-B2C1-4553-9114-76CA74C8C9B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C581448-B2C1-4553-9114-76CA74C8C9B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0517197-F4DD-42FF-9214-D8FD785F79C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0517197-F4DD-42FF-9214-D8FD785F79C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0517197-F4DD-42FF-9214-D8FD785F79C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0517197-F4DD-42FF-9214-D8FD785F79C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

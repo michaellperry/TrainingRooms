@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D0517197-F4DD-42FF-9214-D8FD785F79C7}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TrainingRooms.FakeDevice</RootNamespace>
+    <AssemblyName>TrainingRooms.FakeDevice</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <ExpressionBlendVersion>12.0.50429.0</ExpressionBlendVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UpdateControls, Version=2.3.0.0, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\UpdateControls.2.3.1.0\lib\net45\UpdateControls.dll</HintPath>
+    </Reference>
+    <Reference Include="UpdateControls.Correspondence">
+      <HintPath>..\packages\Correspondence.2.2.1.0\lib\net45\UpdateControls.Correspondence.dll</HintPath>
+    </Reference>
+    <Reference Include="UpdateControls.Correspondence.BinaryHTTPClient">
+      <HintPath>..\packages\Correspondence.App.Core.2.2.1.0\lib\net45\UpdateControls.Correspondence.BinaryHTTPClient.dll</HintPath>
+    </Reference>
+    <Reference Include="UpdateControls.Correspondence.Data">
+      <HintPath>..\packages\Correspondence.App.Core.2.2.1.0\lib\net45\UpdateControls.Correspondence.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="UpdateControls.Correspondence.FileStream">
+      <HintPath>..\packages\Correspondence.App.Core.2.2.1.0\lib\net45\UpdateControls.Correspondence.FileStream.dll</HintPath>
+    </Reference>
+    <Reference Include="UpdateControls.Correspondence.Memory">
+      <HintPath>..\packages\Correspondence.App.Core.2.2.1.0\lib\net45\UpdateControls.Correspondence.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="UpdateControls.Correspondence.SSCE">
+      <HintPath>..\packages\Correspondence.App.Core.2.2.1.0\lib\net45\UpdateControls.Correspondence.SSCE.dll</HintPath>
+    </Reference>
+    <Reference Include="UpdateControls.XAML, Version=2.3.0.0, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\UpdateControls.2.3.1.0\lib\net45\UpdateControls.XAML.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="HTTPConfigurationProvider.cs" />
+    <Compile Include="Selectors\ViewSelector.cs" />
+    <Compile Include="SynchronizationService.cs" />
+    <Compile Include="ViewModels\DisplayViewModel.cs" />
+    <Compile Include="ViewModels\IScreen.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\RoomHeader.cs" />
+    <Compile Include="ViewModels\RoomSelectorViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Compile Include="Views\DisplayControl.xaml.cs">
+      <DependentUpon>DisplayControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RoomSelectorControl.xaml.cs">
+      <DependentUpon>RoomSelectorControl.xaml</DependentUpon>
+    </Compile>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Views\DisplayControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RoomSelectorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TrainingRooms.Logic\TrainingRooms.Logic.csproj">
+      <Project>{7c581448-b2c1-4553-9114-76ca74c8c9b1}</Project>
+      <Name>TrainingRooms.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TrainingRooms.Model\TrainingRooms.Model.csproj">
+      <Project>{620da39b-98ff-47c4-b17e-6a6fbae98d31}</Project>
+      <Name>TrainingRooms.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <DesignData Include="SampleData\DisplayViewModelSampleData.xaml" />
+    <DesignData Include="SampleData\RoomSelectorViewModelSampleData.xaml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

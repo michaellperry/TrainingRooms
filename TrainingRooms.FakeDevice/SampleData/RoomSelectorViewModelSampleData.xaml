@@ -1,0 +1,17 @@
+﻿<ViewModels:RoomSelectorViewModel xmlns:ViewModels="clr-namespace:TrainingRooms.FakeDevice.ViewModels">
+	<ViewModels:RoomSelectorViewModel.Rooms>
+		<ViewModels:RoomHeader Name="Nam aenean"/>
+		<ViewModels:RoomHeader Name="Vestibulum maecenas aliquam"/>
+		<ViewModels:RoomHeader Name="Cras praesent duis adipiscing integer"/>
+		<ViewModels:RoomHeader Name="Curabitur mauris phasellus nullam"/>
+		<ViewModels:RoomHeader Name="Class quisque parturient consequat"/>
+		<ViewModels:RoomHeader Name="Curae convallis"/>
+		<ViewModels:RoomHeader Name="Donec etiam vivamus sed"/>
+		<ViewModels:RoomHeader Name="Fusce nunc"/>
+		<ViewModels:RoomHeader Name="Amet aptent ante arcu aliquam"/>
+		<ViewModels:RoomHeader Name="Vestibulum lorem diam accumsan"/>
+	</ViewModels:RoomSelectorViewModel.Rooms>
+	<ViewModels:RoomSelectorViewModel.SelectedRoom>
+		<ViewModels:RoomHeader Name="Dis est aliquet morbi vestibulum"/>
+	</ViewModels:RoomSelectorViewModel.SelectedRoom>
+</ViewModels:RoomSelectorViewModel>

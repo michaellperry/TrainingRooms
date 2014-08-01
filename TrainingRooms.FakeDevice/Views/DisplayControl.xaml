@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="TrainingRooms.FakeDevice.Views.DisplayControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid d:DataContext="{d:DesignData /SampleData/DisplayViewModelSampleData.xaml}">
+    	<TextBlock Text="{Binding RoomName}" Margin="78,14,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+    	<Border Margin="48,68,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="112.96" Width="206.157">
+    		<Border.Background>
+    			<ImageBrush ImageSource="{Binding ImageUrl}" Stretch="Uniform"/>
+    		</Border.Background>
+            
+    		<TextBlock Text="{Binding GroupName}" Height="15.96" Width="96.157"/>
+    	</Border>
+    	<TextBlock Text="{Binding StartTime}" Margin="48,228,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+    	<TextBlock Text="{Binding EndTime}" Margin="60,257,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            
+    </Grid>
+</UserControl>
