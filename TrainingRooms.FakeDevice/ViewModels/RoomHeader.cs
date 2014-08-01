@@ -33,5 +33,10 @@ namespace TrainingRooms.FakeDevice.ViewModels
 
             return Object.Equals(this._room, that._room);
         }
+
+        public override int GetHashCode()
+        {
+            return _room.GetHashCode();
+        }
     }
 }

@@ -31,9 +31,16 @@ namespace TrainingRooms.FakeDevice.ViewModels
             }
         }
 
-        public bool Synchronizing
+        public SynchronizationStatus Synchronization
         {
-            get { return _device.Community.Synchronizing; }
+            get
+            {
+                if (_device.Community.Synchronizing)
+                    return SynchronizationStatus.Working;
+                if (_device.Community.LastException != null)
+                    return SynchronizationStatus.Error;
+                return SynchronizationStatus.OK;
+            }
         }
 
         public string LastException
@@ -41,7 +48,7 @@ namespace TrainingRooms.FakeDevice.ViewModels
             get
             {
                 return _device.Community.LastException == null
-                    ? String.Empty
+                    ? null
                     : _device.Community.LastException.Message;
             }
         }

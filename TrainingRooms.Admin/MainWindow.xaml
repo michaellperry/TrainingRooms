@@ -6,9 +6,9 @@
     xmlns:DataSources="clr-namespace:TrainingRooms.Admin.DataSources" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:Itzben="clr-namespace:Itzben;assembly=Itzben" 
     mc:Ignorable="d" 
-    x:Class="TrainingRooms.Admin.MainWindow" 
-    DataContext="{Binding Main, Source={StaticResource Locator}}"
+    x:Class="TrainingRooms.Admin.MainWindow"
     Title="Training Rooms" 
     Height="578.525" 
     Width="759">
@@ -26,11 +26,36 @@
 			</DataTemplate.Triggers>
 		</DataTemplate>
 	</Window.Resources>
-	<Grid d:DataContext="{Binding Main, Mode=OneWay, Source={StaticResource DesignModeDataSourceDataSource}}">
+	<Window.DataContext>
+		<Binding Path="Main" Source="{StaticResource Locator}"/>
+	</Window.DataContext>
+	<Grid d:DataContext="{Binding Main, Mode=OneWay, Source={StaticResource DesignModeDataSourceDataSource}}" Margin="10">
+		<i:Interaction.Behaviors>
+			<Itzben:BindVisualStateBehavior StateName="{Binding Synchronization, Mode=OneWay}"/>
+		</i:Interaction.Behaviors>
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup x:Name="SynchronizationStates">
+				<VisualState x:Name="OK"/>
+				<VisualState x:Name="Working">
+					<Storyboard>
+						<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="StatusIndicator">
+							<EasingColorKeyFrame KeyTime="0" Value="#FFCDD435"/>
+						</ColorAnimationUsingKeyFrames>
+					</Storyboard>
+				</VisualState>
+				<VisualState x:Name="Error">
+					<Storyboard>
+						<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="StatusIndicator">
+							<EasingColorKeyFrame KeyTime="0" Value="#FFD43543"/>
+						</ColorAnimationUsingKeyFrames>
+					</Storyboard>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
 		<DatePicker HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" SelectedDate="{Binding SeletedDate}" Width="100"/>
-		<ScrollViewer Margin="55,57,0,0" HorizontalScrollBarVisibility="Visible">
+		<ScrollViewer Margin="55,57,-10,-10" HorizontalScrollBarVisibility="Visible">
 			<StackPanel VerticalAlignment="Top">
-				<ItemsControl ItemTemplate="{DynamicResource ScheduleViewModelTemplate}" ItemsSource="{Binding Schedules}" AlternationCount="2"></ItemsControl>
+				<ItemsControl ItemTemplate="{DynamicResource ScheduleViewModelTemplate}" ItemsSource="{Binding Schedules}" AlternationCount="2"/>
 				<Grid>
 					<Button Content="New Room" HorizontalAlignment="Left" Height="25" Margin="5" VerticalAlignment="Top" Width="85" Command="{Binding NewRoom, Mode=OneWay}"/>
 				</Grid>
@@ -38,6 +63,6 @@
 		</ScrollViewer>
 		<Button Content="&lt;" HorizontalAlignment="Left" Height="24" Margin="115,10,0,0" VerticalAlignment="Top" Width="13.36" Command="{Binding PriorDate, Mode=OneWay}"/>
 		<Button Content="&gt;" HorizontalAlignment="Left" Height="24" Margin="133.36,10,0,0" VerticalAlignment="Top" Width="13.36" Command="{Binding NextDate, Mode=OneWay}"/>
-        
+		<Ellipse x:Name="StatusIndicator" Fill="#FF35D44B" HorizontalAlignment="Right" Height="20" Margin="0,10,10,0" VerticalAlignment="Top" Width="20" ToolTip="{Binding LastException, Mode=OneWay}"/>
 	</Grid>
 </Window>

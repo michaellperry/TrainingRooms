@@ -87,9 +87,16 @@ namespace TrainingRooms.Admin.ViewModels
             }
         }
 
-        public bool Synchronizing
+        public SynchronizationStatus Synchronization
         {
-            get { return _community.Synchronizing; }
+            get
+            {
+                if (_community.Synchronizing)
+                    return SynchronizationStatus.Working;
+                if (_community.LastException != null)
+                    return SynchronizationStatus.Error;
+                return SynchronizationStatus.OK;
+            }
         }
 
         public string LastException
@@ -97,7 +104,7 @@ namespace TrainingRooms.Admin.ViewModels
             get
             {
                 return _community.LastException == null
-                    ? String.Empty
+                    ? null
                     : _community.LastException.Message;
             }
         }

@@ -22,8 +22,6 @@ namespace TrainingRooms.FakeDevice
 
         private SignDevice _device;
         private DateSelectionModel _dateSelectionModel;
-        private Independent<Installation> _installation = new Independent<Installation>(
-            Installation.GetNullInstance());
 
         public void Initialize()
         {
@@ -81,43 +79,17 @@ namespace TrainingRooms.FakeDevice
 
         public Installation Installation
         {
-            get
-            {
-                lock (this)
-                {
-                    return _installation;
-                }
-            }
-            private set
-            {
-                lock (this)
-                {
-                    _installation.Value = value;
-                }
-            }
+            get { return _device.Installation; }
         }
 
         private void CreateInstallation()
         {
-            _device.Community.Perform(async delegate
-			{
-                var installation = await _device.Community.LoadFactAsync<Installation>(ThisInstallation);
-				if (installation == null)
-				{
-                    installation = await _device.Community.AddFactAsync(new Installation());
-                    await _device.Community.SetFactAsync(ThisInstallation, installation);
-				}
-				Installation = installation;
-			});
+            _device.CreateInstallation();
         }
 
         private void CreateInstallationDesignData()
         {
-            _device.Community.Perform(async delegate
-			{
-                var installation = await _device.Community.AddFactAsync(new Installation());
-				Installation = installation;
-			});
+            _device.CreateInstallationDesignData();
         }
     }
 }
