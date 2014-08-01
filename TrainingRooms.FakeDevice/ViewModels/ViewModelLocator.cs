@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using TrainingRooms.Model;
 using UpdateControls.XAML;
 
 namespace TrainingRooms.FakeDevice.ViewModels

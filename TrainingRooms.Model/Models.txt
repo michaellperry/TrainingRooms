@@ -8,7 +8,7 @@ digraph "TrainingRooms.Model"
     Room__name -> Room
     Room__name -> Room__name [label="  *"]
     RoomDelete -> Room
-    Group -> Venue
+    Group -> Venue [color="red"]
     Group__name -> Group
     Group__name -> Group__name [label="  *"]
     Group__imageUrl -> Group
