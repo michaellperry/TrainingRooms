@@ -97,8 +97,8 @@ key:
 	unique;
 
 mutable:
-	int startMinutes;
-	int endMinutes;
+	publish int startMinutes;
+	publish int endMinutes;
 
 query:
 	bool isDeleted {
@@ -118,7 +118,7 @@ query:
 
 fact EventGroup {
 key:
-	Event event;
+	publish Event event;
 	publish Group group;
 	EventGroup* prior;
 
@@ -142,5 +142,5 @@ query:
 
 fact EventDelete {
 key:
-	Event deletedEvent;
+	publish Event deletedEvent;
 }

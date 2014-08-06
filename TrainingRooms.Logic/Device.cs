@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TrainingRooms.Logic.Jobs;
@@ -109,6 +110,7 @@ namespace TrainingRooms.Logic
             Community.Subscribe(() => VenueToken);
             Community.Subscribe(() => VenueToken.Venue.Value);
             Community.Subscribe(() => Schedules);
+            Community.Subscribe(() => Schedules.SelectMany(s => s.Events));
         }
 
         public async Task<Venue> GetVenueAsync()

@@ -27,17 +27,17 @@ digraph "TrainingRooms.Model"
     GroupDelete -> Group
     Schedule -> Room [color="red"]
     Schedule -> Day
-    Event__startMinutes -> Event
+    Event__startMinutes -> Event [color="red"]
     Event__startMinutes -> Event__startMinutes [label="  *"]
-    Event__endMinutes -> Event
+    Event__endMinutes -> Event [color="red"]
     Event__endMinutes -> Event__endMinutes [label="  *"]
-    EventGroup -> Event
+    EventGroup -> Event [color="red"]
     EventGroup -> Group [color="red"]
     EventGroup -> EventGroup [label="  *"]
     EventSchedule -> Event
     EventSchedule -> Schedule [color="red"]
     EventSchedule -> EventSchedule [label="  *"]
-    EventDelete -> Event
+    EventDelete -> Event [color="red"]
 }
 **/
 
@@ -2519,7 +2519,7 @@ namespace TrainingRooms.Model
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.Event__startMinutes", 1071414948);
+			"TrainingRooms.Model.Event__startMinutes", 1071420424);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -2556,7 +2556,7 @@ namespace TrainingRooms.Model
 			        _correspondenceFactType,
 			        "event",
 			        Event._correspondenceFactType,
-			        false));
+			        true));
             }
             return _cacheRoleEvent;
         }
@@ -2695,7 +2695,7 @@ namespace TrainingRooms.Model
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.Event__endMinutes", 1071414948);
+			"TrainingRooms.Model.Event__endMinutes", 1071420424);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -2732,7 +2732,7 @@ namespace TrainingRooms.Model
 			        _correspondenceFactType,
 			        "event",
 			        Event._correspondenceFactType,
-			        false));
+			        true));
             }
             return _cacheRoleEvent;
         }
@@ -2862,7 +2862,7 @@ namespace TrainingRooms.Model
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.EventGroup", -998519060);
+			"TrainingRooms.Model.EventGroup", -998513584);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -2899,7 +2899,7 @@ namespace TrainingRooms.Model
 			        _correspondenceFactType,
 			        "event",
 			        Event._correspondenceFactType,
-			        false));
+			        true));
             }
             return _cacheRoleEvent;
         }
@@ -3224,7 +3224,7 @@ namespace TrainingRooms.Model
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"TrainingRooms.Model.EventDelete", -1112682424);
+			"TrainingRooms.Model.EventDelete", -1112682420);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -3261,7 +3261,7 @@ namespace TrainingRooms.Model
 			        _correspondenceFactType,
 			        "deletedEvent",
 			        Event._correspondenceFactType,
-			        false));
+			        true));
             }
             return _cacheRoleDeletedEvent;
         }
