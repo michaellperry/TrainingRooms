@@ -86,6 +86,22 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
+    <Reference Include="UpdateControls, Version=2.3.0.0, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\UpdateControls.2.3.1.0\lib\portable-net45+sl50+wp80+win80\UpdateControls.dll</HintPath>
+    </Reference>
+    <Reference Include="UpdateControls.Correspondence">
+      <HintPath>..\..\packages\Correspondence.2.2.1.0\lib\MonoTouch\UpdateControls.Correspondence.dll</HintPath>
+    </Reference>
+    <Reference Include="UpdateControls.Correspondence.BinaryHTTPClient">
+      <HintPath>..\..\packages\Correspondence.App.Core.2.2.1.0\lib\MonoTouch\UpdateControls.Correspondence.BinaryHTTPClient.dll</HintPath>
+    </Reference>
+    <Reference Include="UpdateControls.Correspondence.Data">
+      <HintPath>..\..\packages\Correspondence.App.Core.2.2.1.0\lib\MonoTouch\UpdateControls.Correspondence.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="UpdateControls.Correspondence.Memory">
+      <HintPath>..\..\packages\Correspondence.App.Core.2.2.1.0\lib\MonoTouch\UpdateControls.Correspondence.Memory.dll</HintPath>
+    </Reference>
     <Reference Include="Xamarin.Forms.Core">
       <HintPath>..\..\packages\Xamarin.Forms.1.0.6186\lib\MonoTouch10\Xamarin.Forms.Core.dll</HintPath>
     </Reference>
@@ -95,6 +111,16 @@
     <Reference Include="Xamarin.Forms.Xaml">
       <HintPath>..\..\packages\Xamarin.Forms.1.0.6186\lib\MonoTouch10\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TrainingRooms.Logic\TrainingRooms.Logic.csproj">
+      <Project>{7c581448-b2c1-4553-9114-76ca74c8c9b1}</Project>
+      <Name>TrainingRooms.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TrainingRooms.Model\TrainingRooms.Model.csproj">
+      <Project>{620da39b-98ff-47c4-b17e-6a6fbae98d31}</Project>
+      <Name>TrainingRooms.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\TrainingRooms.Device\TrainingRooms.Device.projitems" Label="Shared" Condition="Exists('..\TrainingRooms.Device\TrainingRooms.Device.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
