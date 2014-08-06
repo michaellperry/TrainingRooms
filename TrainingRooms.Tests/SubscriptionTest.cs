@@ -73,6 +73,11 @@ namespace TrainingRooms.Tests
             await CreateRoomAsync(_venueAdmin, "B");
             var scheduleAdmin = await roomAdmin.ScheduleForAsync(new DateTime(2014, 7, 18));
             var @event = await scheduleAdmin.NewEventAsync();
+            var group = await _venueAdmin.NewGroupAsync();
+            group.Name = "Papers We Love, Dallas";
+            await @event.SetGroup(group);
+            @event.StartMinutes = 9 * 60;
+            @event.EndMinutes = 17 * 60;
             await SynchronizeAsync();
 
             _sign.SelectedRoom = _venueSign.Rooms.Where(r => r.Name == "A").Single();
@@ -80,6 +85,11 @@ namespace TrainingRooms.Tests
             var scheduleSign = await _venueSign.Rooms.Where(r => r.Name == "A").Single()
                 .ScheduleForAsync(new DateTime(2014, 7, 18));
             Assert.AreEqual(1, scheduleSign.Events.Count());
+            Assert.AreEqual(1, scheduleSign.Events.Single().EventGroups.Count());
+            Assert.AreEqual("Papers We Love, Dallas",
+                scheduleSign.Events.Single().EventGroups.Single().Group.Name.Value);
+            Assert.AreEqual(9 * 60, scheduleSign.Events.Single().StartMinutes.Value);
+            Assert.AreEqual(17 * 60, scheduleSign.Events.Single().EndMinutes.Value);
         }
 
         [TestMethod]
