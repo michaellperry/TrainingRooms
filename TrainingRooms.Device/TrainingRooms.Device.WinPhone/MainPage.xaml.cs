@@ -20,7 +20,8 @@ namespace TrainingRooms.Device.WinPhone
             InitializeComponent();
 
             Forms.Init();
-            Content = TrainingRooms.Device.App.GetMainPage().ConvertPageToUIElement(this);
+            Content = TrainingRooms.Device.App.GetMainPage(new DispatchAdapter())
+                .ConvertPageToUIElement(this);
         }
     }
 }

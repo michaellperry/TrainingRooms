@@ -31,7 +31,8 @@ namespace TrainingRooms.Device.iOS
 
             window = new UIWindow(UIScreen.MainScreen.Bounds);
 
-            window.RootViewController = App.GetMainPage().CreateViewController();
+            window.RootViewController = App.GetMainPage(new DispatchAdapter(app))
+                .CreateViewController();
 
             window.MakeKeyAndVisible();
 

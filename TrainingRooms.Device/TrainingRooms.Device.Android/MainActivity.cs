@@ -20,7 +20,7 @@ namespace TrainingRooms.Device.Droid
 
             Xamarin.Forms.Forms.Init(this, bundle);
 
-            SetPage(App.GetMainPage());
+            SetPage(App.GetMainPage(new DispatchAdapter(this)));
         }
     }
 }

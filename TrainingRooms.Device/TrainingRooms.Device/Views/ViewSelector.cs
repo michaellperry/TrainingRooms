@@ -19,12 +19,29 @@ namespace TrainingRooms.Device.Views
 
         private View ResolveView(IScreen screen)
         {
-            return new Label
-            {
-                Text = "Hello, Correspondence!",
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-            };
+            return
+                Resolve<RoomSelectorScreen, RoomSelectorView>(screen) ??
+                // TODO: Resolve views for additional screeens here.
+
+                new Label
+                {
+                    Text = String.Format("Cannot resolve view for screen {0}", screen),
+                    VerticalOptions = LayoutOptions.CenterAndExpand,
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                };
+        }
+
+        private View Resolve<TScreen, TView>(IScreen screen)
+            where TScreen : class, IScreen
+            where TView : View, new()
+        {
+            var specificScreen = screen as TScreen;
+            if (specificScreen == null)
+                return null;
+
+            TView view = new TView();
+            view.BindingContext = screen;
+            return view;
         }
     }
 }

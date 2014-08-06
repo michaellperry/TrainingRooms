@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UpdateControls;
 using TrainingRooms.Device.Screens;
+using TrainingRooms.Device.Synchronization;
 
 namespace TrainingRooms.Device.Screens
 {
@@ -20,7 +21,7 @@ namespace TrainingRooms.Device.Screens
         {
             get
             {
-                return new RoomSelectorScreen();
+                return new RoomSelectorScreen(_synchronizationService.Device);
             }
         }
     }

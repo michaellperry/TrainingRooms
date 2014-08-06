@@ -24,6 +24,9 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		TrainingRooms.Device\TrainingRooms.Device\TrainingRooms.Device.projitems*{da5fd1aa-4bb5-4aab-aa86-6509feb5414f}*SharedItemsImports = 13
+		TrainingRooms.Device\TrainingRooms.Device\TrainingRooms.Device.projitems*{c9f51be8-6dda-4ae1-adc6-86038c6dfeae}*SharedItemsImports = 4
+		TrainingRooms.Device\TrainingRooms.Device\TrainingRooms.Device.projitems*{445fd75a-9ee7-4768-ac20-904226e4b24c}*SharedItemsImports = 4
+		TrainingRooms.Device\TrainingRooms.Device\TrainingRooms.Device.projitems*{69961000-238b-4530-b57f-365f8513daf8}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU

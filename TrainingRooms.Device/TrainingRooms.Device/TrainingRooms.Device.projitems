@@ -12,10 +12,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Dependency\DependentExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Dependency\DependentSubscription.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDispatchOnUIThread.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screens\IScreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screens\RoomSelectorScreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screens\ScreenController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SynchronizationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Synchronization\HTTPConfigurationProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Synchronization\SynchronizationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\RoomSelectorView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\ViewSelector.cs" />
   </ItemGroup>
 </Project>

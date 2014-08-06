@@ -2,9 +2,10 @@ using TrainingRooms.Logic;
 using TrainingRooms.Logic.SelectionModels;
 using TrainingRooms.Model;
 using UpdateControls.Correspondence;
+using UpdateControls.Correspondence.BinaryHTTPClient;
 using UpdateControls.Correspondence.Memory;
 
-namespace TrainingRooms.Device
+namespace TrainingRooms.Device.Synchronization
 {
     public class SynchronizationService
     {
@@ -16,7 +17,16 @@ namespace TrainingRooms.Device
             _dateSelectionModel = new DateSelectionModel();
             _device = new SignDevice(new MemoryStorageStrategy(), _dateSelectionModel);
 
+            var http = new HTTPConfigurationProvider();
+            var communication = new BinaryHTTPAsynchronousCommunicationStrategy(http);
+            _device.Community.AddAsynchronousCommunicationStrategy(communication);
+
+            _device.Subscribe();
+
             CreateInstallation();
+
+            _device.Community.BeginSending();
+            _device.Community.BeginReceiving();
         }
 
         public SignDevice Device
