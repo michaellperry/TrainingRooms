@@ -9,12 +9,12 @@ namespace TrainingRooms.Device.Views
 {
     public class ViewSelector
     {
-        private Dependent<View> _view;
+        private Dependent<IScreen> _screen;
         
         public ViewSelector(ContentPage mainPage, ScreenController screenController)
         {
-            _view = new Dependent<View>(() => ResolveView(screenController.MainScreen));
-            _view.Subscribe(v => mainPage.Content = v);
+            _screen = new Dependent<IScreen>(() => screenController.MainScreen);
+            _screen.Subscribe(screen => mainPage.Content = ResolveView(screen));
         }
 
         private View ResolveView(IScreen screen)
