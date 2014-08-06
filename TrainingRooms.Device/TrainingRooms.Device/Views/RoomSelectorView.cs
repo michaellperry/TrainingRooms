@@ -9,6 +9,10 @@ namespace TrainingRooms.Device.Views
             var statusLabel = new Label();
             statusLabel.SetBinding(Label.TextProperty, new Binding("Status"));
             Children.Add(statusLabel);
+
+            var roomList = new ListView();
+            roomList.SetBinding(ListView.ItemsSourceProperty, new Binding("Rooms"));
+            Children.Add(roomList);
         }
     }
 }
