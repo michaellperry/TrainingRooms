@@ -15,7 +15,7 @@ namespace TrainingRooms.Model
             var eventGroups = await EventGroups.EnsureAsync();
             var firstEventGroup = eventGroups.FirstOrDefault();
             if (firstEventGroup == null)
-                return null;
+                return Group.GetNullInstance();
 
             return await firstEventGroup.Group.EnsureAsync();
         }

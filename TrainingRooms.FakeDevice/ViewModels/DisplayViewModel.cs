@@ -75,9 +75,10 @@ namespace TrainingRooms.FakeDevice.ViewModels
                 string groupUrl = nextEvent.EventGroups
                     .Select(eg => eg.Group == null ? null : eg.Group.ImageUrl.Value)
                     .FirstOrDefault();
-                return groupUrl == null
-                    ? null
-                    : new Uri(groupUrl, UriKind.Absolute);
+                Uri result;
+                if (!Uri.TryCreate(groupUrl, UriKind.Absolute, out result))
+                    return null;
+                return result;
             }
         }
 
