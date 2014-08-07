@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TrainingRooms.Device.Dependency;
+using TrainingRooms.Device.Models;
 using TrainingRooms.Device.ViewModels;
 using TrainingRooms.Logic;
-using UpdateControls.Fields;
-using System.Linq;
-using System.Threading;
-using TrainingRooms.Device.Dependency;
 
 namespace TrainingRooms.Device.Screens
 {
     public class RoomSelectorScreen : ViewModelBase, IScreen
     {
         private readonly SignDevice _device;
-
-        public RoomSelectorScreen(SignDevice device)
+        private readonly RoomSelection _selection;
+        
+        public RoomSelectorScreen(SignDevice device, RoomSelection selection)
         {
             _device = device;
+            _selection = selection;
         }
 
         public string Status
@@ -38,13 +36,37 @@ namespace TrainingRooms.Device.Screens
             }
         }
 
-        public IEnumerable<string> Rooms
+        public IEnumerable<RoomHeader> Rooms
         {
             get
             {
                 return GetCollection(() =>
                     from room in _device.VenueToken.Venue.Value.Rooms
-                    select room.Name.Value);
+                    select new RoomHeader(room));
+            }
+        }
+
+        public RoomHeader SelectedRoom
+        {
+            get
+            {
+                return Get(() => _selection.SelectedRoom == null
+                    ? null
+                    : new RoomHeader(_selection.SelectedRoom));
+            }
+            set
+            {
+                _selection.SelectedRoom = value == null
+                    ? null
+                    : value.Room;
+            }
+        }
+
+        public string Selection
+        {
+            get
+            {
+                return Get(() => _selection.SelectedRoom == null ? null : _selection.SelectedRoom.Name.Value);
             }
         }
     }

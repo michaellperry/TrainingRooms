@@ -15,7 +15,12 @@ namespace TrainingRooms.Device.ViewModels
 
         public string Name
         {
-            get { return Get(() => _room.Name); }
+            get { return Get(() => _room.Name.Value); }
+        }
+
+        public Room Room
+        {
+            get { return _room; }
         }
 
         public override bool Equals(object obj)

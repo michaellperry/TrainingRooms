@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Dependency\DependentSubscription.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Dependency\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDispatchOnUIThread.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\RoomSelection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screens\IScreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screens\RoomSelectorScreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screens\ScreenController.cs" />
