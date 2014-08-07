@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using TrainingRooms.Device.Dependency;
 using TrainingRooms.Device.Models;
 using TrainingRooms.Device.ViewModels;
@@ -62,11 +63,16 @@ namespace TrainingRooms.Device.Screens
             }
         }
 
-        public string Selection
+        public ICommand LockCommand
         {
             get
             {
-                return Get(() => _selection.SelectedRoom == null ? null : _selection.SelectedRoom.Name.Value);
+                return MakeCommand
+                    .When(() => _selection.SelectedRoom != null)
+                    .Do(delegate
+                    {
+                        _device.SelectedRoom = _selection.SelectedRoom;
+                    });
             }
         }
     }

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UpdateControls;
-using TrainingRooms.Device.Screens;
+﻿using TrainingRooms.Device.Models;
 using TrainingRooms.Device.Synchronization;
-using TrainingRooms.Device.Models;
 
 namespace TrainingRooms.Device.Screens
 {
@@ -26,7 +21,11 @@ namespace TrainingRooms.Device.Screens
         {
             get
             {
-                return new RoomSelectorScreen(_synchronizationService.Device, _roomSelection);
+                var device = _synchronizationService.Device;
+                var selectedRoom = device.SelectedRoom;
+                return selectedRoom.IsNull
+                    ? (IScreen)new RoomSelectorScreen(device, _roomSelection)
+                    : (IScreen)new DisplayScreen(selectedRoom);
             }
         }
     }

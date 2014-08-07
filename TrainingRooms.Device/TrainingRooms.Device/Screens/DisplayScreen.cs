@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
+using TrainingRooms.Device.Dependency;
 using TrainingRooms.Logic.Jobs;
 using TrainingRooms.Model;
 using UpdateControls.Fields;
 
-namespace TrainingRooms.FakeDevice.ViewModels
+namespace TrainingRooms.Device.Screens
 {
-    public class DisplayViewModel : IScreen
+    public class DisplayScreen : ViewModelBase, IScreen
     {
         private readonly Room _room;
 
@@ -27,7 +23,7 @@ namespace TrainingRooms.FakeDevice.ViewModels
         private IAsyncJob<Schedule> _tomorrowsSchedule;
         private Dependent<Event> _nextEvent;
 
-        public DisplayViewModel(Room room)
+        public DisplayScreen(Room room)
         {
             _room = room;
 
@@ -47,20 +43,23 @@ namespace TrainingRooms.FakeDevice.ViewModels
 
         public string RoomName
         {
-            get { return _room.Name; }
+            get { return Get(() => _room.Name.Value); }
         }
 
         public string GroupName
         {
             get
             {
-                Event nextEvent = _nextEvent.Value;
-                if (nextEvent.IsNull)
-                    return "Open";
+                return Get(() =>
+                {
+                    Event nextEvent = _nextEvent.Value;
+                    if (nextEvent.IsNull)
+                        return "Open";
 
-                return nextEvent.EventGroups
-                    .Select(eg => eg.Group == null ? null : eg.Group.Name.Value)
-                    .FirstOrDefault();
+                    return nextEvent.EventGroups
+                        .Select(eg => eg.Group == null ? null : eg.Group.Name.Value)
+                        .FirstOrDefault();
+                });
             }
         }
 
@@ -68,17 +67,20 @@ namespace TrainingRooms.FakeDevice.ViewModels
         {
             get
             {
-                Event nextEvent = _nextEvent.Value;
-                if (nextEvent.IsNull)
-                    return null;
+                return Get(() =>
+                {
+                    Event nextEvent = _nextEvent.Value;
+                    if (nextEvent.IsNull)
+                        return null;
 
-                string groupUrl = nextEvent.EventGroups
-                    .Select(eg => eg.Group == null ? null : eg.Group.ImageUrl.Value)
-                    .FirstOrDefault();
-                Uri result;
-                if (!Uri.TryCreate(groupUrl, UriKind.Absolute, out result))
-                    return null;
-                return result;
+                    string groupUrl = nextEvent.EventGroups
+                        .Select(eg => eg.Group == null ? null : eg.Group.ImageUrl.Value)
+                        .FirstOrDefault();
+                    Uri result;
+                    if (!Uri.TryCreate(groupUrl, UriKind.Absolute, out result))
+                        return null;
+                    return result;
+                });
             }
         }
 
@@ -86,12 +88,15 @@ namespace TrainingRooms.FakeDevice.ViewModels
         {
             get
             {
-                Event nextEvent = _nextEvent.Value;
-                if (nextEvent.IsNull)
-                    return string.Empty;
+                return Get(() =>
+                {
+                    Event nextEvent = _nextEvent.Value;
+                    if (nextEvent.IsNull)
+                        return string.Empty;
 
-                return string.Format("{0:t}", TimeSpan.FromMinutes(
-                    nextEvent.StartMinutes.Value));
+                    return string.Format("{0:t}", TimeSpan.FromMinutes(
+                        nextEvent.StartMinutes.Value));
+                });
             }
         }
 
@@ -99,12 +104,15 @@ namespace TrainingRooms.FakeDevice.ViewModels
         {
             get
             {
-                Event nextEvent = _nextEvent.Value;
-                if (nextEvent.IsNull)
-                    return string.Empty;
+                return Get(() =>
+                {
+                    Event nextEvent = _nextEvent.Value;
+                    if (nextEvent.IsNull)
+                        return string.Empty;
 
-                return string.Format("{0:t}", TimeSpan.FromMinutes(
-                    nextEvent.EndMinutes.Value));
+                    return string.Format("{0:t}", TimeSpan.FromMinutes(
+                        nextEvent.EndMinutes.Value));
+                });
             }
         }
 
@@ -112,10 +120,13 @@ namespace TrainingRooms.FakeDevice.ViewModels
         {
             get
             {
-                lock (this)
+                return Get(() =>
                 {
-                    return _today.Value;
-                }
+                    lock (this)
+                    {
+                        return _today.Value;
+                    }
+                });
             }
             set
             {
@@ -130,10 +141,13 @@ namespace TrainingRooms.FakeDevice.ViewModels
         {
             get
             {
-                lock (this)
+                return Get(() =>
                 {
-                    return _minutesOfDay.Value;
-                }
+                    lock (this)
+                    {
+                        return _minutesOfDay.Value;
+                    }
+                });
             }
             set
             {

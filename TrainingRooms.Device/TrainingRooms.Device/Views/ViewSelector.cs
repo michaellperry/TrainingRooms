@@ -23,6 +23,7 @@ namespace TrainingRooms.Device.Views
         {
             return
                 Resolve<RoomSelectorScreen, RoomSelectorView>(screen) ??
+                Resolve<DisplayScreen, DisplayView>(screen) ??
                 // TODO: Resolve views for additional screeens here.
 
                 new Label

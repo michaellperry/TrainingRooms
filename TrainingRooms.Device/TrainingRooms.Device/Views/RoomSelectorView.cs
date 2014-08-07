@@ -13,10 +13,11 @@ namespace TrainingRooms.Device.Views
                 Label.TextProperty, s => s.Status);
             Children.Add(statusLabel);
 
-            var roomLabel = new Label();
-            roomLabel.SetBinding<RoomSelectorScreen>(
-                Label.TextProperty, s => s.Selection);
-            Children.Add(roomLabel);
+            var lockButton = new Button();
+            lockButton.Text = "Lock";
+            lockButton.SetBinding<RoomSelectorScreen>(
+                Button.CommandProperty, s => s.LockCommand);
+            Children.Add(lockButton);
 
             var roomList = new ListView();
             roomList.SetBinding<RoomSelectorScreen>(
