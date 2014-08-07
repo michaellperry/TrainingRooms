@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using TrainingRooms.Device.ViewModels;
+using Xamarin.Forms;
 
 namespace TrainingRooms.Device.Views
 {
@@ -12,7 +13,9 @@ namespace TrainingRooms.Device.Views
 
             var roomList = new ListView();
             roomList.SetBinding(ListView.ItemsSourceProperty, new Binding("Rooms"));
-            Children.Add(roomList);
+            var roomHeaderTemplate = new DataTemplate(() => new Label { Text = "Room" });
+            roomList.ItemTemplate = roomHeaderTemplate;
+            //Children.Add(roomList);
         }
     }
 }

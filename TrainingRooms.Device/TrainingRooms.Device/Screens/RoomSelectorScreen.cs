@@ -38,13 +38,13 @@ namespace TrainingRooms.Device.Screens
             }
         }
 
-        public IEnumerable<string> Rooms
+        public IEnumerable<RoomHeader> Rooms
         {
             get
             {
                 return GetCollection(() =>
                     from room in _device.VenueToken.Venue.Value.Rooms
-                    select room.Name.Value);
+                    select new RoomHeader(room));
             }
         }
     }

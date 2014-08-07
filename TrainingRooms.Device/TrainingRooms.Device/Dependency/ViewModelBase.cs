@@ -107,7 +107,6 @@ namespace TrainingRooms.Device.Dependency
             _getMethod = getMethod;
             _depCollection = new Dependent(OnUpdateCollection);
             _depCollection.Invalidated += () => UpdateScheduler.ScheduleUpdate(this);
-            _depCollection.Touch();
         }
 
         private void OnUpdateCollection()
@@ -140,7 +139,7 @@ namespace TrainingRooms.Device.Dependency
 
         public override object Value
         {
-            get { return _collection; }
+            get { _depCollection.OnGet(); return _collection; }
         }
 
         public void UpdateNow()

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using TrainingRooms.Logic;
 using TrainingRooms.Logic.SelectionModels;
 using TrainingRooms.Model;
@@ -12,14 +13,21 @@ namespace TrainingRooms.Device.Synchronization
         private SignDevice _device;
         private DateSelectionModel _dateSelectionModel;
 
+        private MemoryStorageStrategy _storage;
+
         public void Initialize()
         {
             _dateSelectionModel = new DateSelectionModel();
-            _device = new SignDevice(new MemoryStorageStrategy(), _dateSelectionModel);
+            _storage = new MemoryStorageStrategy();
+            _device = new SignDevice(_storage, _dateSelectionModel);
 
             var http = new HTTPConfigurationProvider();
             var communication = new BinaryHTTPAsynchronousCommunicationStrategy(http);
             _device.Community.AddAsynchronousCommunicationStrategy(communication);
+
+            _device.Community.FactAdded += Community_FactAdded;
+            _device.Community.FactReceived += Community_FactReceived;
+            communication.MessageReceived += communication_MessageReceived;
 
             _device.Subscribe();
 
@@ -27,6 +35,21 @@ namespace TrainingRooms.Device.Synchronization
 
             _device.Community.BeginSending();
             _device.Community.BeginReceiving();
+        }
+
+        void communication_MessageReceived(UpdateControls.Correspondence.Mementos.FactTreeMemento obj)
+        {
+            Debug.WriteLine("Message received");
+        }
+
+        void Community_FactReceived()
+        {
+            Debug.WriteLine("Fact received");
+        }
+
+        void Community_FactAdded(CorrespondenceFact obj)
+        {
+            Debug.WriteLine("Fact added");
         }
 
         public SignDevice Device
