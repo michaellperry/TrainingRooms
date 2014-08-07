@@ -7,6 +7,7 @@ using TrainingRooms.Logic;
 using UpdateControls.Fields;
 using System.Linq;
 using System.Threading;
+using TrainingRooms.Device.Dependency;
 
 namespace TrainingRooms.Device.Screens
 {
@@ -14,56 +15,36 @@ namespace TrainingRooms.Device.Screens
     {
         private readonly SignDevice _device;
 
-        private Independent<int> _time = new Independent<int>();
-
-        private Timer _timer;
-
         public RoomSelectorScreen(SignDevice device)
         {
             _device = device;
-
-            _timer = new Timer(SetTime, null, 1000, 1000);
-
-            Bind(() => Status);
-            //Bind(() => Rooms);
         }
 
         public string Status
         {
             get
             {
-                lock (this)
+                return Get(() =>
                 {
-                    return _time.Value.ToString();
-                }
+                    if (_device.Community.Synchronizing)
+                        return "Synchronizing...";
 
-                if (_device.Community.Synchronizing)
-                    return "Synchronizing...";
+                    var lastException = _device.Community.LastException;
+                    if (lastException != null)
+                        return _device.Community.LastException.Message;
 
-                var lastException = _device.Community.LastException;
-                if (lastException != null)
-                    return _device.Community.LastException.Message;
-
-                return "Ready";
+                    return "Ready";
+                });
             }
         }
 
-        public List<string> Rooms
+        public IEnumerable<string> Rooms
         {
             get
             {
-                return
-                    (from room in _device.VenueToken.Venue.Value.Rooms
-                     select room.Name.Value)
-                    .ToList();
-            }
-        }
-
-        private void SetTime(object state)
-        {
-            lock (this)
-            {
-                _time.Value++;
+                return GetCollection(() =>
+                    from room in _device.VenueToken.Venue.Value.Rooms
+                    select room.Name.Value);
             }
         }
     }

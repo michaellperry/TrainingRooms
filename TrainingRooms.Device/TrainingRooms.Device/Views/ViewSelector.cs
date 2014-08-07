@@ -13,7 +13,9 @@ namespace TrainingRooms.Device.Views
         
         public ViewSelector(ContentPage mainPage, ScreenController screenController)
         {
+            //mainPage.Content = ResolveView(screenController.MainScreen);
             _screen = new Dependent<IScreen>(() => screenController.MainScreen);
+            _screen.OnGet();
             _screen.Subscribe(screen => mainPage.Content = ResolveView(screen));
         }
 

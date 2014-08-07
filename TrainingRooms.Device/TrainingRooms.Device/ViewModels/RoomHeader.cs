@@ -1,4 +1,5 @@
-﻿using TrainingRooms.Model;
+﻿using TrainingRooms.Device.Dependency;
+using TrainingRooms.Model;
 
 namespace TrainingRooms.Device.ViewModels
 {
@@ -9,13 +10,11 @@ namespace TrainingRooms.Device.ViewModels
         public RoomHeader(Room room)
         {
             _room = room;
-
-            Bind(() => Name);
         }
 
         public string Name
         {
-            get { return _room.Name; }
+            get { return Get(() => _room.Name); }
         }
     }
 }
