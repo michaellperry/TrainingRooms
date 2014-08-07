@@ -13,9 +13,7 @@ namespace TrainingRooms.Device.Views
 
             var roomList = new ListView();
             roomList.SetBinding(ListView.ItemsSourceProperty, new Binding("Rooms"));
-            var roomHeaderTemplate = new DataTemplate(() => new Label { Text = "Room" });
-            roomList.ItemTemplate = roomHeaderTemplate;
-            //Children.Add(roomList);
+            Children.Add(roomList);
         }
     }
 }

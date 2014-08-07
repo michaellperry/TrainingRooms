@@ -1,5 +1,7 @@
 using Android.App;
 using System;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace TrainingRooms.Device.Droid
 {
@@ -14,7 +16,10 @@ namespace TrainingRooms.Device.Droid
 
         public void Invoke(Action action)
         {
-            owner.RunOnUiThread(action);
+            ThreadPool.QueueUserWorkItem(delegate(Object obj)
+            {
+                owner.RunOnUiThread(action);
+            });
         }
     }
 }
