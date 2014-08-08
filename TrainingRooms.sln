@@ -21,6 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainingRooms.Device.Androi
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TrainingRooms.Device", "TrainingRooms.Device\TrainingRooms.Device\TrainingRooms.Device.shproj", "{DA5FD1AA-4BB5-4AAB-AA86-6509FEB5414F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{278143A9-6A2D-4FBE-A702-A8E639113CEA}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		TrainingRooms.Device\TrainingRooms.Device\TrainingRooms.Device.projitems*{da5fd1aa-4bb5-4aab-aa86-6509feb5414f}*SharedItemsImports = 13
